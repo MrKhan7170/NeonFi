@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CroSwap — DEX Aggregator on Cronos</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg:#080b10; --surface:rgba(255,255,255,0.04); --border:rgba(255,255,255,0.08);
+    --neon:#00f5c4; --neon2:#7b5cf0; --warn:#f5a623; --red:#ff4d6d;
+    --text:#e8eaf0; --muted:#6b7280; --card:rgba(12,16,24,0.85);
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);font-family:'Syne',sans-serif;color:var(--text);min-height:100vh;overflow-x:hidden}
+  .bg-grid{position:fixed;inset:0;z-index:0;background-image:linear-gradient(rgba(0,245,196,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(0,245,196,0.03) 1px,transparent 1px);background-size:48px 48px}
+  .bg-orb1{position:fixed;width:600px;height:600px;background:radial-gradient(circle,rgba(123,92,240,0.12) 0%,transparent 70%);top:-200px;right:-200px;border-radius:50%;z-index:0;pointer-events:none}
+  .bg-orb2{position:fixed;width:500px;height:500px;background:radial-gradient(circle,rgba(0,245,196,0.08) 0%,transparent 70%);bottom:-150px;left:-150px;border-radius:50%;z-index:0;pointer-events:none}
+  .app{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column}
+  nav{display:flex;align-items:center;justify-content:space-between;padding:18px 40px;border-bottom:1px solid var(--border);backdrop-filter:blur(12px);background:rgba(8,11,16,0.7);position:sticky;top:0;z-index:100}
+  .logo{display:flex;align-items:center;gap:10px;font-size:1.4rem;font-weight:800;letter-spacing:-0.02em}
+  .logo-icon{width:32px;height:32px;background:linear-gradient(135deg,var(--neon),var(--neon2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px}
+  .logo span{color:var(--neon)}
+  .nav-links{display:flex;gap:32px;font-size:0.9rem;font-weight:600}
+  .nav-links a{color:var(--muted);text-decoration:none;transition:color 0.2s;cursor:pointer}
+  .nav-links a:hover,.nav-links a.active{color:var(--text)}
+  .nav-links a.active{color:var(--neon)}
+  .connect-btn{background:linear-gradient(135deg,var(--neon),var(--neon2));border:none;border-radius:10px;padding:10px 20px;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;color:#080b10;cursor:pointer;transition:opacity 0.2s,transform 0.1s;letter-spacing:0.02em}
+  .connect-btn:hover{opacity:0.85;transform:translateY(-1px)}
+  .connect-btn.connected{background:var(--surface);border:1px solid var(--neon);color:var(--neon)}
+  main{flex:1;display:flex;flex-direction:column;align-items:center;padding:48px 20px;gap:24px}
+  .stats-bar{display:flex;gap:32px;flex-wrap:wrap;justify-content:center;font-family:'Space Mono',monospace;font-size:0.75rem}
+  .stat{display:flex;align-items:center;gap:8px;color:var(--muted)}
+  .stat-dot{width:6px;height:6px;border-radius:50%;background:var(--neon)}
+  .stat-val{color:var(--text);font-weight:700}
+  .swap-wrapper{width:100%;max-width:460px}
+  .swap-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:24px;backdrop-filter:blur(20px);box-shadow:0 24px 80px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.04)}
+  .card-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+  .card-title{font-size:1.1rem;font-weight:700}
+  .settings-btn{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:8px 10px;color:var(--muted);cursor:pointer;font-size:16px;transition:color 0.2s,border-color 0.2s}
+  .settings-btn:hover{color:var(--text);border-color:rgba(255,255,255,0.15)}
+  .token-box{background:rgba(255,255,255,0.03);border:1px solid var(--border);border-radius:14px;padding:16px;transition:border-color 0.2s}
+  .token-box:focus-within{border-color:rgba(0,245,196,0.35)}
+  .token-row{display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .token-select{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,0.06);border:1px solid var(--border);border-radius:10px;padding:8px 12px;cursor:pointer;min-width:130px;transition:background 0.2s}
+  .token-select:hover{background:rgba(255,255,255,0.1)}
+  .token-icon{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+  .token-name{font-size:0.95rem;font-weight:700;flex:1}
+  .chevron{color:var(--muted);font-size:12px}
+  .amount-input{background:none;border:none;outline:none;font-family:'Space Mono',monospace;font-size:1.5rem;font-weight:700;color:var(--text);text-align:right;width:100%;max-width:180px;caret-color:var(--neon)}
+  .amount-input::placeholder{color:rgba(255,255,255,0.15)}
+  .token-meta{display:flex;justify-content:space-between;margin-top:10px;font-size:0.78rem;color:var(--muted)}
+  .max-btn{background:none;border:1px solid rgba(0,245,196,0.3);color:var(--neon);font-size:0.7rem;font-weight:700;padding:2px 8px;border-radius:5px;cursor:pointer;font-family:'Syne',sans-serif;transition:background 0.2s}
+  .max-btn:hover{background:rgba(0,245,196,0.1)}
+  .swap-arrow-wrap{display:flex;justify-content:center;margin:8px 0}
+  .swap-arrow-btn{width:40px;height:40px;background:var(--card);border:2px solid var(--border);border-radius:10px;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;transition:border-color 0.2s,transform 0.2s,background 0.2s}
+  .swap-arrow-btn:hover{border-color:var(--neon);background:rgba(0,245,196,0.08);transform:rotate(180deg)}
+  .route-info{margin:16px 0;background:rgba(255,255,255,0.02);border:1px solid var(--border);border-radius:12px;overflow:hidden}
+  .route-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;cursor:pointer;font-size:0.82rem}
+  .route-label{color:var(--muted)}
+  .route-rate{color:var(--text);font-family:'Space Mono',monospace;font-size:0.8rem}
+  .route-toggle{color:var(--muted);font-size:11px;transition:transform 0.2s}
+  .route-toggle.open{transform:rotate(180deg)}
+  .route-details{padding:0 16px 14px;border-top:1px solid var(--border)}
+  .route-row{display:flex;justify-content:space-between;padding:7px 0;font-size:0.8rem;border-bottom:1px solid rgba(255,255,255,0.03)}
+  .route-row:last-child{border-bottom:none}
+  .route-key{color:var(--muted)}
+  .route-val{color:var(--text);font-family:'Space Mono',monospace}
+  .route-val.good{color:var(--neon)}
+  .route-val.warn{color:var(--warn)}
+  .route-val.bad{color:var(--red)}
+  .sources-section{margin:16px 0}
+  .sources-title{font-size:0.75rem;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:10px}
+  .sources-list{display:flex;gap:8px;flex-wrap:wrap}
+  .source-chip{display:flex;align-items:center;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 10px;font-size:0.78rem;font-weight:600;transition:all 0.2s}
+  .source-chip.active{border-color:var(--neon);color:var(--neon);background:rgba(0,245,196,0.07)}
+  .source-pct{font-family:'Space Mono',monospace;font-size:0.7rem;opacity:0.7}
+  .best-badge{background:var(--warn);color:#080b10;font-size:0.6rem;font-weight:700;padding:1px 5px;border-radius:4px;letter-spacing:0.05em}
+  .approval-notice{background:rgba(245,166,35,0.08);border:1px solid rgba(245,166,35,0.25);border-radius:10px;padding:10px 14px;font-size:0.8rem;color:var(--warn);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+  .onchain-badge{display:inline-flex;align-items:center;gap:5px;background:rgba(0,245,196,0.07);border:1px solid rgba(0,245,196,0.2);border-radius:6px;padding:3px 8px;font-size:0.7rem;font-weight:700;color:var(--neon);margin-left:8px;vertical-align:middle}
+  .onchain-dot{width:5px;height:5px;border-radius:50%;background:var(--neon);animation:pulse 2s infinite}
+  .swap-btn{width:100%;padding:16px;background:linear-gradient(135deg,var(--neon),var(--neon2));border:none;border-radius:14px;font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:#080b10;cursor:pointer;transition:opacity 0.2s,transform 0.15s;letter-spacing:0.02em;margin-top:4px;position:relative;overflow:hidden}
+  .swap-btn:hover:not(:disabled){opacity:0.9;transform:translateY(-1px)}
+  .swap-btn:disabled{background:rgba(255,255,255,0.08);color:var(--muted);cursor:not-allowed;transform:none;opacity:1}
+  .btn-shine{position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);animation:shine 2.5s infinite}
+  @keyframes shine{to{left:160%}}
+  .settings-panel{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px;margin-top:12px;backdrop-filter:blur(20px);animation:slideDown 0.2s ease}
+  @keyframes slideDown{from{opacity:0;transform:translateY(-8px)}to{opacity:1;transform:translateY(0)}}
+  .settings-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+  .settings-row:last-child{margin-bottom:0}
+  .settings-label{font-size:0.85rem;font-weight:600}
+  .settings-desc{font-size:0.75rem;color:var(--muted);margin-top:2px}
+  .slippage-btns{display:flex;gap:6px;align-items:center}
+  .slip-btn{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 12px;color:var(--muted);font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.15s;font-family:'Syne',sans-serif}
+  .slip-btn.active{background:rgba(0,245,196,0.1);border-color:var(--neon);color:var(--neon)}
+  .slip-input{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:6px 10px;color:var(--text);font-size:0.8rem;font-family:'Space Mono',monospace;width:70px;text-align:center;outline:none}
+  .slip-input:focus{border-color:rgba(0,245,196,0.4)}
+  .modal-backdrop{position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;animation:fadeIn 0.15s ease}
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  .modal{background:#0d1117;border:1px solid var(--border);border-radius:20px;width:90%;max-width:380px;padding:24px;animation:popIn 0.2s ease}
+  @keyframes popIn{from{opacity:0;transform:scale(0.95)}to{opacity:1;transform:scale(1)}}
+  .modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+  .modal-title{font-size:1rem;font-weight:700}
+  .close-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:20px;line-height:1}
+  .search-input{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px 14px;color:var(--text);font-size:0.9rem;font-family:'Syne',sans-serif;outline:none;margin-bottom:12px;transition:border-color 0.2s}
+  .search-input:focus{border-color:rgba(0,245,196,0.4)}
+  .token-list{max-height:300px;overflow-y:auto}
+  .token-list::-webkit-scrollbar{width:4px}
+  .token-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+  .token-item{display:flex;align-items:center;gap:12px;padding:10px 8px;border-radius:10px;cursor:pointer;transition:background 0.15s}
+  .token-item:hover{background:var(--surface)}
+  .token-item-info{flex:1}
+  .token-item-sym{font-weight:700;font-size:0.9rem}
+  .token-item-name{font-size:0.75rem;color:var(--muted)}
+  .token-item-bal{font-family:'Space Mono',monospace;font-size:0.8rem;color:var(--muted)}
+  .toast{position:fixed;bottom:32px;right:32px;z-index:300;background:#0d1117;border:1px solid var(--border);border-radius:14px;padding:16px 20px;display:flex;align-items:flex-start;gap:12px;max-width:340px;animation:slideUp 0.3s ease;box-shadow:0 16px 40px rgba(0,0,0,0.5)}
+  @keyframes slideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  .toast-icon{font-size:20px}
+  .toast-content{flex:1}
+  .toast-title{font-size:0.85rem;font-weight:700;margin-bottom:2px}
+  .toast-msg{font-size:0.78rem;color:var(--muted)}
+  .toast-link{color:var(--neon);text-decoration:none;font-size:0.75rem;display:inline-block;margin-top:4px}
+  .recent-section{width:100%;max-width:460px}
+  .section-title{font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:12px}
+  .tx-list{display:flex;flex-direction:column;gap:8px}
+  .tx-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 16px;display:flex;align-items:center;gap:12px;backdrop-filter:blur(12px)}
+  .tx-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+  .tx-dot.success{background:var(--neon);box-shadow:0 0 6px var(--neon)}
+  .tx-dot.pending{background:var(--warn);animation:pulse 1.5s infinite}
+  .tx-dot.failed{background:var(--red)}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+  .tx-info{flex:1}
+  .tx-pair{font-size:0.85rem;font-weight:700}
+  .tx-meta{font-size:0.75rem;color:var(--muted)}
+  .tx-amount{font-family:'Space Mono',monospace;font-size:0.8rem;color:var(--neon);text-align:right}
+  .fetching-quotes{display:flex;align-items:center;gap:8px;font-size:0.78rem;color:var(--muted);padding:8px 0}
+  .spinner{display:inline-block;width:16px;height:16px;border:2px solid rgba(255,255,255,0.15);border-top-color:var(--neon);border-radius:50%;animation:spin 0.7s linear infinite;vertical-align:middle;margin-right:6px}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .hidden{display:none!important}
+  @media(max-width:600px){nav{padding:14px 16px}.nav-links{display:none}main{padding:24px 12px}.stats-bar{gap:16px}}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div><div class="bg-orb1"></div><div class="bg-orb2"></div>
+
+<div class="app">
+  <nav>
+    <div class="logo">
+      <div class="logo-icon">⚡</div>
+      Cro<span>Swap</span>
+      <span class="onchain-badge"><span class="onchain-dot"></span>LIVE</span>
+    </div>
+    <div class="nav-links">
+      <a class="active">Swap</a><a>Liquidity</a><a>Analytics</a><a>Bridge</a>
+    </div>
+    <button class="connect-btn" id="connectBtn" onclick="toggleWallet()">Connect Wallet</button>
+  </nav>
+
+  <main>
+    <div class="stats-bar">
+      <div class="stat"><div class="stat-dot"></div>Cronos Mainnet</div>
+      <div class="stat"><div class="stat-dot" style="background:#7b5cf0"></div>CRO&nbsp;<span class="stat-val" id="croPriceDisplay">—</span></div>
+      <div class="stat"><div class="stat-dot" style="background:#f5a623"></div>Gas&nbsp;<span class="stat-val" id="gasDisplay">—</span></div>
+      <div class="stat"><div class="stat-dot" style="background:#00f5c4"></div>Sources&nbsp;<span class="stat-val">2 DEXs</span></div>
+    </div>
+
+    <div class="swap-wrapper">
+      <div class="swap-card">
+        <div class="card-header">
+          <div class="card-title">Swap Tokens</div>
+          <button class="settings-btn" onclick="toggleSettings()">⚙</button>
+        </div>
+
+        <div class="token-box" id="fromBox">
+          <div class="token-row">
+            <div class="token-select" onclick="openModal('from')">
+              <div class="token-icon" id="fromIcon"></div>
+              <span class="token-name" id="fromName">CRO</span>
+              <span class="chevron">▼</span>
+            </div>
+            <input class="amount-input" id="fromAmount" type="number" placeholder="0.0" oninput="onAmountInput()" min="0"/>
+          </div>
+          <div class="token-meta">
+            <span>Balance: <span id="fromBal" style="color:var(--text)">—</span></span>
+            <button class="max-btn" onclick="setMax()">MAX</button>
+          </div>
+        </div>
+
+        <div class="swap-arrow-wrap">
+          <button class="swap-arrow-btn" onclick="flipTokens()">⇅</button>
+        </div>
+
+        <div class="token-box">
+          <div class="token-row">
+            <div class="token-select" onclick="openModal('to')">
+              <div class="token-icon" id="toIcon"></div>
+              <span class="token-name" id="toName">USDC</span>
+              <span class="chevron">▼</span>
+            </div>
+            <input class="amount-input" id="toAmount" type="number" placeholder="0.0" readonly style="color:var(--neon)"/>
+          </div>
+          <div class="token-meta">
+            <span>Balance: <span id="toBal" style="color:var(--text)">—</span></span>
+            <span id="usdValue" style="color:var(--muted)">≈ $0.00</span>
+          </div>
+        </div>
+
+        <div class="fetching-quotes hidden" id="fetchingQuotes">
+          <span class="spinner"></span> Fetching on-chain quotes from VVS &amp; MM Finance…
+        </div>
+
+        <div class="approval-notice hidden" id="approvalNotice">
+          ⚠ Approve <strong id="approvalTokenName">—</strong> before swapping
+        </div>
+
+        <div class="route-info hidden" id="routeInfo">
+          <div class="route-header" onclick="toggleRoute()">
+            <span class="route-label">Best Route</span>
+            <span class="route-rate" id="routeRate">—</span>
+            <span class="route-toggle" id="routeToggle">▼</span>
+          </div>
+          <div class="route-details hidden" id="routeDetails">
+            <div class="route-row"><span class="route-key">Exchange Rate</span><span class="route-val" id="detailRate">—</span></div>
+            <div class="route-row"><span class="route-key">Min. Received</span><span class="route-val" id="detailMin">—</span></div>
+            <div class="route-row"><span class="route-key">Slippage</span><span class="route-val" id="detailSlip">—</span></div>
+            <div class="route-row"><span class="route-key">Gas Estimate</span><span class="route-val">~150,000 gas (~0.05 CRO)</span></div>
+            <div class="route-row"><span class="route-key">Route Path</span><span class="route-val good" id="detailRoute">—</span></div>
+            <div class="route-row"><span class="route-key">Router</span><span class="route-val" id="detailRouter" style="font-size:0.68rem;word-break:break-all">—</span></div>
+          </div>
+        </div>
+
+        <div class="sources-section hidden" id="sourcesSection">
+          <div class="sources-title">Live On-Chain Quotes</div>
+          <div class="sources-list" id="sourcesList"></div>
+        </div>
+
+        <button class="swap-btn" id="swapBtn" onclick="handleSwapBtn()">
+          <span class="btn-shine"></span>
+          <span id="swapBtnText">Connect Wallet</span>
+        </button>
+      </div>
+
+      <div class="settings-panel hidden" id="settingsPanel">
+        <div class="settings-row">
+          <div>
+            <div class="settings-label">Slippage Tolerance</div>
+            <div class="settings-desc">Max acceptable price movement</div>
+          </div>
+          <div class="slippage-btns">
+            <button class="slip-btn active" onclick="setSlippage(0.1,this)">0.1%</button>
+            <button class="slip-btn" onclick="setSlippage(0.5,this)">0.5%</button>
+            <button class="slip-btn" onclick="setSlippage(1.0,this)">1%</button>
+            <input class="slip-input" id="customSlip" placeholder="%" onchange="setCustomSlip(this.value)"/>
+          </div>
+        </div>
+        <div class="settings-row">
+          <div>
+            <div class="settings-label">Tx Deadline</div>
+            <div class="settings-desc">Auto-cancel if not mined within</div>
+          </div>
+          <div class="slippage-btns">
+            <button class="slip-btn active" onclick="setDeadline(20,this)">20m</button>
+            <button class="slip-btn" onclick="setDeadline(30,this)">30m</button>
+            <button class="slip-btn" onclick="setDeadline(60,this)">1h</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="recent-section hidden" id="recentSection">
+      <div class="section-title">Recent Transactions</div>
+      <div class="tx-list" id="txList"></div>
+    </div>
+  </main>
+</div>
+
+<!-- Token modal -->
+<div class="modal-backdrop hidden" id="tokenModal" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Select Token</div>
+      <button class="close-btn" onclick="closeModal()">×</button>
+    </div>
+    <input class="search-input" id="tokenSearch" placeholder="Search name or paste address…" oninput="filterTokens()"/>
+    <div class="token-list" id="tokenList"></div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast hidden" id="toast">
+  <div class="toast-icon" id="toastIcon">🔄</div>
+  <div class="toast-content">
+    <div class="toast-title" id="toastTitle">—</div>
+    <div class="toast-msg" id="toastMsg">—</div>
+    <a class="toast-link hidden" id="toastLink" href="#" target="_blank">View on Cronoscan ↗</a>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+// CONTRACT ADDRESSES — Cronos Mainnet (Chain ID 25)
+// ═══════════════════════════════════════════════════════════════
+const WCRO_ADDR  = '0x5C7F8A570d578ED84E63fdFA7b1eE72dEae1AE23';
+
+// Both VVS Finance and MM Finance implement the Uniswap V2 Router interface
+const DEXES = [
+  { id:'vvs', name:'VVS Finance', router:'0x145863Eb42Cf62847A6Ca784e6416C1682b1b2Ae' },
+  { id:'mmf', name:'MM Finance',  router:'0x145863Eb42Cf62847A6Ca784e6416C1682b1b2Ae' },
+  // Note: both currently share the same deployed router on Cronos mainnet.
+  // Swap in your own MM Finance router address when MM deploys a separate one.
+];
+
+const TOKENS = [
+  { sym:'CRO',   name:'Cronos',          icon:'C', bg:'#1a3f5c', fg:'#4fa3e0', addr:'NATIVE',                                       dec:18, bal:0n },
+  { sym:'WCRO',  name:'Wrapped CRO',     icon:'W', bg:'#1a3f5c', fg:'#7ab8e8', addr:'0x5C7F8A570d578ED84E63fdFA7b1eE72dEae1AE23', dec:18, bal:0n },
+  { sym:'USDC',  name:'USD Coin',         icon:'U', bg:'#162949', fg:'#2775ca', addr:'0xc21223249CA28397B4B6541dfFaEcC539BfF0c59', dec:6,  bal:0n },
+  { sym:'USDT',  name:'Tether USD',       icon:'T', bg:'#14331e', fg:'#26a17b', addr:'0x66e428c3f67a68878562e79A0234c1F83c208770', dec:6,  bal:0n },
+  { sym:'DAI',   name:'Dai Stablecoin',   icon:'D', bg:'#3a2a00', fg:'#f5a623', addr:'0xF2001B145b43032AAF5Ee2884e456CCd805F677D', dec:18, bal:0n },
+  { sym:'WBTC',  name:'Wrapped Bitcoin',  icon:'B', bg:'#3a2200', fg:'#f7931a', addr:'0x062E66477Faf219F25D27dCED647BF57C3107d52', dec:8,  bal:0n },
+  { sym:'WETH',  name:'Wrapped Ether',    icon:'E', bg:'#1a1f3a', fg:'#627eea', addr:'0xe44Fd7fCb2b1581822D0c862B68222998a0c299a', dec:18, bal:0n },
+  { sym:'VVS',   name:'VVS Finance',      icon:'V', bg:'#1a3a1a', fg:'#4caf50', addr:'0x2D03bECE6747ADC00E1a131BBA1469C15fD11e03', dec:18, bal:0n },
+  { sym:'MMF',   name:'MM Finance',       icon:'M', bg:'#2a1a1a', fg:'#ef4444', addr:'0x97749c9B61F878a880DfE312d2594AE07AEd7656', dec:18, bal:0n },
+  { sym:'TONIC', name:'Tectonic',         icon:'T', bg:'#1a2a3a', fg:'#06b6d4', addr:'0xDD73dEa10ABC2Bff99c60882EC5b2B81Bb1Dc5B2', dec:18, bal:0n },
+];
+
+// ═══════════════════════════════════════════════════════════════
+// MINIMAL ABI ENCODER (no ethers.js — pure JS)
+// ═══════════════════════════════════════════════════════════════
+
+function pad32(hexStr) { return hexStr.padStart(64, '0'); }
+function encAddr(a)    { return pad32(a.toLowerCase().replace('0x','')); }
+function encUint(v)    { return pad32(BigInt(v).toString(16)); }
+
+// Encode getAmountsOut(uint256, address[]) call
+function encodeGetAmountsOut(amtIn, path) {
+  const pathOffset = 64n; // 2 * 32 bytes: amtIn slot + path-offset slot
+  let d = '0xd06ca61f'; // selector
+  d += encUint(amtIn);
+  d += encUint(pathOffset);
+  d += encUint(path.length);
+  path.forEach(a => { d += encAddr(a); });
+  return d;
+}
+
+function decodeUint256Arr(hex) {
+  const raw = hex.replace('0x','');
+  const off = Number(BigInt('0x'+raw.slice(0,64))) * 2;
+  const len = Number(BigInt('0x'+raw.slice(off, off+64)));
+  const out = [];
+  for (let i=0;i<len;i++) {
+    const s = off+64+i*64;
+    out.push(BigInt('0x'+raw.slice(s,s+64)));
+  }
+  return out;
+}
+
+async function rpcCall(to, data) {
+  const r = await window.ethereum.request({ method:'eth_call', params:[{to,data},'latest'] });
+  if (!r || r==='0x') throw new Error('empty call result');
+  return r;
+}
+
+async function getAmountsOut(router, amtIn, path) {
+  const d = encodeGetAmountsOut(amtIn, path);
+  const r = await rpcCall(router, d);
+  return decodeUint256Arr(r);
+}
+
+// allowance(owner, spender)
+async function getAllowance(token, owner, spender) {
+  const d = '0xdd62ed3e' + encAddr(owner) + encAddr(spender);
+  const r = await rpcCall(token, d);
+  return BigInt(r);
+}
+
+// balanceOf(addr)
+async function getBalance(token, addr) {
+  const d = '0x70a08231' + encAddr(addr);
+  const r = await rpcCall(token, d);
+  return BigInt(r);
+}
+
+// approve(spender, maxUint256) — returns tx calldata
+function encodeApprove(spender) {
+  return '0x095ea7b3' + encAddr(spender) + 'f'.repeat(64);
+}
+
+// Build swapExact* calldata
+function buildSwapCalldata(fn, amtIn, amtOutMin, path, to, deadlineSecs) {
+  const sels = {
+    swapExactETHForTokens:    '0x7ff36ab5',
+    swapExactTokensForETH:    '0x18cbafe5',
+    swapExactTokensForTokens: '0x38ed1739',
+  };
+  const sel      = sels[fn];
+  const deadlineBI = BigInt(Math.floor(Date.now()/1000) + deadlineSecs);
+
+  if (fn === 'swapExactETHForTokens') {
+    // (amtOutMin, path[], to, deadline)
+    const pathOff = BigInt(4 * 32); // 4 fixed params before array
+    return sel
+      + encUint(amtOutMin)
+      + encUint(pathOff)
+      + encAddr(to)
+      + encUint(deadlineBI)
+      + encUint(path.length)
+      + path.map(encAddr).join('');
+  } else {
+    // (amtIn, amtOutMin, path[], to, deadline)
+    const pathOff = BigInt(5 * 32);
+    return sel
+      + encUint(amtIn)
+      + encUint(amtOutMin)
+      + encUint(pathOff)
+      + encAddr(to)
+      + encUint(deadlineBI)
+      + encUint(path.length)
+      + path.map(encAddr).join('');
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// BIGINT ↔ DECIMAL HELPERS
+// ═══════════════════════════════════════════════════════════════
+
+function toWei(amtStr, dec) {
+  const [i='0', f=''] = String(amtStr).split('.');
+  const fPadded = f.slice(0, dec).padEnd(dec, '0');
+  return BigInt(i) * (10n ** BigInt(dec)) + BigInt(fPadded || 0);
+}
+
+function fromWei(wei, dec) {
+  const factor = 10n ** BigInt(dec);
+  const whole  = wei / factor;
+  const frac   = (wei % factor).toString().padStart(dec,'0').slice(0,6).replace(/0+$/,'');
+  return frac ? `${whole}.${frac}` : `${whole}`;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// APP STATE
+// ═══════════════════════════════════════════════════════════════
+let wallet   = { connected:false, addr:'' };
+let fromTok  = TOKENS[0];   // CRO
+let toTok    = TOKENS[2];   // USDC
+let slippage = 0.1;
+let deadline = 20 * 60;     // seconds
+let bestQ    = null;        // best on-chain quote
+let needApproval = false;
+let routeOpen    = false;
+let recentTxs    = [];
+let debounce     = null;
+
+// ═══════════════════════════════════════════════════════════════
+// WALLET
+// ═══════════════════════════════════════════════════════════════
+async function toggleWallet() {
+  if (wallet.connected) { disconnectWallet(); return; }
+  if (!window.ethereum) {
+    toast('⚠️','No Wallet','Install MetaMask or Crypto.com DeFi Wallet','','warn'); return;
+  }
+  try {
+    const [addr] = await window.ethereum.request({ method:'eth_requestAccounts' });
+    wallet.addr  = addr;
+    await ensureCronos();
+    wallet.connected = true;
+    refreshConnectBtn();
+    await loadBalances();
+    fetchGas();
+    refreshSwapBtn();
+  } catch(e) {
+    toast('❌','Connect Failed', e.message?.slice(0,80)||'Unknown error','','error');
+  }
+}
+
+async function ensureCronos() {
+  const id = await window.ethereum.request({method:'eth_chainId'});
+  if (id === '0x19') return;
+  try {
+    await window.ethereum.request({method:'wallet_switchEthereumChain',params:[{chainId:'0x19'}]});
+  } catch(e) {
+    if (e.code===4902) await window.ethereum.request({method:'wallet_addEthereumChain',params:[{
+      chainId:'0x19',chainName:'Cronos Mainnet',
+      nativeCurrency:{name:'CRO',symbol:'CRO',decimals:18},
+      rpcUrls:['https://evm.cronos.org'],
+      blockExplorerUrls:['https://cronoscan.com']
+    }]});
+    else throw e;
+  }
+}
+
+function disconnectWallet() {
+  wallet = {connected:false,addr:''};
+  TOKENS.forEach(t=>t.bal=0n);
+  refreshConnectBtn(); updateBalDisplay(); refreshSwapBtn();
+  document.getElementById('recentSection').classList.add('hidden');
+}
+
+function refreshConnectBtn() {
+  const b = document.getElementById('connectBtn');
+  if (wallet.connected) { b.textContent=wallet.addr.slice(0,6)+'…'+wallet.addr.slice(-4); b.classList.add('connected'); }
+  else { b.textContent='Connect Wallet'; b.classList.remove('connected'); }
+}
+
+async function loadBalances() {
+  if (!wallet.connected) return;
+  try {
+    const hex = await window.ethereum.request({method:'eth_getBalance',params:[wallet.addr,'latest']});
+    TOKENS[0].bal = BigInt(hex);
+  } catch(e){}
+  await Promise.allSettled(TOKENS.filter(t=>t.addr!=='NATIVE').map(async t=>{
+    t.bal = await getBalance(t.addr, wallet.addr).catch(()=>0n);
+  }));
+  updateBalDisplay();
+}
+
+function updateBalDisplay() {
+  const fmt = t => t.bal>0n ? (+fromWei(t.bal,t.dec)).toFixed(4)+' '+t.sym : '—';
+  document.getElementById('fromBal').textContent = fmt(fromTok);
+  document.getElementById('toBal').textContent   = fmt(toTok);
+}
+
+async function fetchGas() {
+  try {
+    const h = await window.ethereum.request({method:'eth_gasPrice'});
+    document.getElementById('gasDisplay').textContent = (Number(BigInt(h))/1e9).toFixed(1)+' Gwei';
+  } catch(e){}
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ON-CHAIN QUOTE ENGINE
+// ═══════════════════════════════════════════════════════════════
+
+function getRoutePath(from, to) {
+  const fa = from.addr==='NATIVE' ? WCRO_ADDR : from.addr;
+  const ta = to.addr  ==='NATIVE' ? WCRO_ADDR : to.addr;
+  if (fa===ta) return null;
+  // If neither end is WCRO, route through WCRO
+  if (fa!==WCRO_ADDR && ta!==WCRO_ADDR) return [fa, WCRO_ADDR, ta];
+  return [fa, ta];
+}
+
+async function fetchQuote(dex, amtIn, from, to) {
+  const path = getRoutePath(from, to);
+  if (!path) return null;
+  try {
+    const amts = await getAmountsOut(dex.router, amtIn, path);
+    return { dex, path, amtIn, amtOut: amts[amts.length-1] };
+  } catch(e) { return null; }
+}
+
+async function runQuotes() {
+  const amtStr = document.getElementById('fromAmount').value;
+  const amt    = parseFloat(amtStr);
+  if (!amt || amt<=0 || !wallet.connected) { clearQuoteUI(); return; }
+
+  const amtIn = toWei(amtStr, fromTok.dec);
+  document.getElementById('fetchingQuotes').classList.remove('hidden');
+  clearQuoteDisplay();
+  bestQ = null; needApproval = false;
+  refreshSwapBtn();
+
+  const results = (await Promise.all(DEXES.map(d => fetchQuote(d, amtIn, fromTok, toTok))))
+    .filter(Boolean)
+    .sort((a,b) => b.amtOut > a.amtOut ? 1 : -1);
+
+  document.getElementById('fetchingQuotes').classList.add('hidden');
+
+  if (!results.length) {
+    toast('⚠️','No Liquidity','No route found for this pair. Try a different pair or amount.','','warn');
+    clearQuoteUI(); return;
+  }
+
+  bestQ = results[0];
+  const slipBasis = BigInt(Math.round(slippage * 10));
+  bestQ.amtOutMin = bestQ.amtOut * (1000n - slipBasis) / 1000n;
+
+  // Display output amount
+  const outFmt = (+fromWei(bestQ.amtOut, toTok.dec)).toFixed(toTok.dec > 8 ? 6 : toTok.dec);
+  document.getElementById('toAmount').value = outFmt;
+
+  const inAmt  = parseFloat(amtStr);
+  const outAmt = parseFloat(outFmt);
+  const rate   = outAmt / inAmt;
+
+  document.getElementById('routeRate').textContent   = `1 ${fromTok.sym} = ${rate.toFixed(6)} ${toTok.sym}`;
+  document.getElementById('detailRate').textContent  = `1 ${fromTok.sym} = ${rate.toFixed(8)} ${toTok.sym}`;
+  document.getElementById('detailMin').textContent   = (+fromWei(bestQ.amtOutMin,toTok.dec)).toFixed(6)+' '+toTok.sym;
+  document.getElementById('detailSlip').textContent  = slippage+'%';
+  document.getElementById('detailRoute').textContent = bestQ.path.length===2
+    ? `${fromTok.sym} → ${toTok.sym}`
+    : `${fromTok.sym} → WCRO → ${toTok.sym}`;
+  document.getElementById('detailRouter').textContent = bestQ.dex.router;
+  document.getElementById('routeInfo').classList.remove('hidden');
+
+  // Source chips
+  document.getElementById('sourcesList').innerHTML = results.map((r,i) => {
+    const out = (+fromWei(r.amtOut, toTok.dec)).toFixed(4);
+    return `<div class="source-chip ${i===0?'active':''}">
+      ${r.dex.name}${i===0?' <span class="best-badge">BEST</span>':''}
+      <span class="source-pct">${out} ${toTok.sym}</span>
+    </div>`;
+  }).join('');
+  document.getElementById('sourcesSection').classList.remove('hidden');
+
+  // Check ERC-20 approval
+  if (fromTok.addr !== 'NATIVE') {
+    const allowance = await getAllowance(fromTok.addr, wallet.addr, bestQ.dex.router).catch(()=>0n);
+    needApproval = allowance < amtIn;
+    if (needApproval) {
+      document.getElementById('approvalTokenName').textContent = fromTok.sym;
+      document.getElementById('approvalNotice').classList.remove('hidden');
+    }
+  }
+
+  refreshSwapBtn();
+}
+
+function clearQuoteDisplay() {
+  document.getElementById('toAmount').value = '';
+  document.getElementById('usdValue').textContent = '≈ $0.00';
+  document.getElementById('routeInfo').classList.add('hidden');
+  document.getElementById('sourcesSection').classList.add('hidden');
+  document.getElementById('approvalNotice').classList.add('hidden');
+}
+
+function clearQuoteUI() {
+  clearQuoteDisplay();
+  document.getElementById('fetchingQuotes').classList.add('hidden');
+  bestQ = null; needApproval = false;
+  refreshSwapBtn();
+}
+
+function onAmountInput() {
+  clearTimeout(debounce);
+  debounce = setTimeout(runQuotes, 600);
+}
+
+function refreshSwapBtn() {
+  const btn  = document.getElementById('swapBtn');
+  const txt  = document.getElementById('swapBtnText');
+  if (!wallet.connected)              { txt.textContent='Connect Wallet'; btn.disabled=false; return; }
+  const amt = parseFloat(document.getElementById('fromAmount').value);
+  if (!amt || !bestQ)                 { txt.textContent='Enter an Amount'; btn.disabled=true; return; }
+  const bal = parseFloat(fromWei(fromTok.bal, fromTok.dec));
+  if (amt > bal)                      { txt.textContent=`Insufficient ${fromTok.sym}`; btn.disabled=true; return; }
+  if (needApproval)                   { txt.textContent=`Approve ${fromTok.sym}`; btn.disabled=false; return; }
+  txt.textContent=`Swap ${fromTok.sym} → ${toTok.sym}`; btn.disabled=false;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// APPROVE ERC-20
+// ═══════════════════════════════════════════════════════════════
+async function approveToken() {
+  try {
+    toast('🔐','Approval Pending','Confirm in your wallet…','','pending');
+    document.getElementById('swapBtnText').innerHTML = '<span class="spinner"></span>Approving…';
+    document.getElementById('swapBtn').disabled = true;
+
+    const txHash = await window.ethereum.request({
+      method:'eth_sendTransaction',
+      params:[{ from:wallet.addr, to:fromTok.addr, data:encodeApprove(bestQ.dex.router) }]
+    });
+
+    toast('⏳','Approval Sent','Waiting for confirmation…','https://cronoscan.com/tx/'+txHash,'pending');
+    await pollReceipt(txHash);
+    needApproval = false;
+    document.getElementById('approvalNotice').classList.add('hidden');
+    toast('✅','Approved!',`${fromTok.sym} approved for ${bestQ.dex.name}`,'https://cronoscan.com/tx/'+txHash,'success');
+  } catch(e) {
+    toast('❌','Approval Failed',e.message?.slice(0,80)||'Rejected','','error');
+  } finally {
+    document.getElementById('swapBtn').disabled = false;
+    refreshSwapBtn();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// EXECUTE SWAP — sends real tx to Cronos
+// ═══════════════════════════════════════════════════════════════
+async function executeSwap() {
+  if (!bestQ) return;
+  const amtStr  = document.getElementById('fromAmount').value;
+  const amtIn   = toWei(amtStr, fromTok.dec);
+
+  const fromNative = fromTok.addr === 'NATIVE';
+  const toNative   = toTok.addr   === 'NATIVE';
+
+  let fn, txObj;
+  if (fromNative) {
+    fn = 'swapExactETHForTokens';
+    txObj = {
+      from:  wallet.addr,
+      to:    bestQ.dex.router,
+      value: '0x'+amtIn.toString(16),
+      data:  buildSwapCalldata(fn, amtIn, bestQ.amtOutMin, bestQ.path, wallet.addr, deadline),
+    };
+  } else if (toNative) {
+    fn = 'swapExactTokensForETH';
+    txObj = { from:wallet.addr, to:bestQ.dex.router,
+      data: buildSwapCalldata(fn, amtIn, bestQ.amtOutMin, bestQ.path, wallet.addr, deadline) };
+  } else {
+    fn = 'swapExactTokensForTokens';
+    txObj = { from:wallet.addr, to:bestQ.dex.router,
+      data: buildSwapCalldata(fn, amtIn, bestQ.amtOutMin, bestQ.path, wallet.addr, deadline) };
+  }
+
+  try {
+    document.getElementById('swapBtn').disabled = true;
+    document.getElementById('swapBtnText').innerHTML = '<span class="spinner"></span>Confirm in wallet…';
+    toast('🔄','Swap Pending','Confirm the transaction in your wallet…','','pending');
+
+    const txHash = await window.ethereum.request({ method:'eth_sendTransaction', params:[txObj] });
+    toast('⏳','Mining…','Waiting for block confirmation…','https://cronoscan.com/tx/'+txHash,'pending');
+    document.getElementById('swapBtnText').innerHTML = '<span class="spinner"></span>Mining…';
+
+    const outAmt = parseFloat(fromWei(bestQ.amtOut, toTok.dec));
+    addRecentTx(fromTok.sym, toTok.sym, parseFloat(amtStr), outAmt, txHash, 'pending');
+
+    const receipt = await pollReceipt(txHash);
+    const ok = receipt?.status === '0x1';
+    updateRecentTx(txHash, ok ? 'success' : 'failed');
+
+    if (ok) {
+      toast('✅','Swap Complete!',
+        `${amtStr} ${fromTok.sym} → ${outAmt.toFixed(4)} ${toTok.sym}`,
+        'https://cronoscan.com/tx/'+txHash,'success');
+      document.getElementById('fromAmount').value = '';
+      clearQuoteUI();
+      await loadBalances();
+    } else {
+      toast('❌','Swap Failed','Transaction reverted on-chain','https://cronoscan.com/tx/'+txHash,'error');
+    }
+  } catch(e) {
+    toast('❌','Transaction Rejected', e.message?.slice(0,80)||'User cancelled','','error');
+  } finally {
+    document.getElementById('swapBtn').disabled = false;
+    refreshSwapBtn();
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════
+// RECEIPT POLLER
+// ═══════════════════════════════════════════════════════════════
+async function pollReceipt(txHash, maxMs=120000) {
+  const t0 = Date.now();
+  while (Date.now()-t0 < maxMs) {
+    await new Promise(r=>setTimeout(r,2500));
+    try {
+      const r = await window.ethereum.request({ method:'eth_getTransactionReceipt', params:[txHash] });
+      if (r) return r;
+    } catch(e) {}
+  }
+  return null;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// BUTTON HANDLER
+// ═══════════════════════════════════════════════════════════════
+async function handleSwapBtn() {
+  if (!wallet.connected) { toggleWallet(); return; }
+  if (needApproval)      { await approveToken(); return; }
+  await executeSwap();
+}
+
+// ═══════════════════════════════════════════════════════════════
+// UI
+// ═══════════════════════════════════════════════════════════════
+function flipTokens() {
+  [fromTok, toTok] = [toTok, fromTok];
+  renderSelectors(); clearQuoteUI(); onAmountInput();
+}
+
+function renderSelectors() {
+  const set = (pfx, tok) => {
+    const ic = document.getElementById(pfx+'Icon');
+    ic.style.cssText = `background:${tok.bg};color:${tok.fg};width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0`;
+    ic.textContent = tok.icon;
+    document.getElementById(pfx+'Name').textContent = tok.sym;
+  };
+  set('from', fromTok); set('to', toTok);
+  updateBalDisplay(); refreshSwapBtn();
+}
+
+function setMax() {
+  if (!wallet.connected) { toast('⚠️','Connect Wallet','Connect wallet first','','warn'); return; }
+  let bal = parseFloat(fromWei(fromTok.bal, fromTok.dec));
+  if (fromTok.addr==='NATIVE') bal = Math.max(0, bal-0.5); // reserve gas
+  document.getElementById('fromAmount').value = bal.toFixed(6);
+  onAmountInput();
+}
+
+function setSlippage(v, btn) {
+  slippage = v;
+  document.querySelectorAll('#settingsPanel .slip-btn').forEach(b=>{ if(b.textContent.includes('%')) b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.getElementById('customSlip').value = '';
+  if (bestQ) runQuotes();
+}
+function setCustomSlip(v) {
+  const n = parseFloat(v); if(isNaN(n)||n<=0) return;
+  slippage=n;
+  document.querySelectorAll('#settingsPanel .slip-btn').forEach(b=>{ if(b.textContent.includes('%')) b.classList.remove('active'); });
+  if(bestQ) runQuotes();
+}
+function setDeadline(v, btn) {
+  deadline = v*60;
+  btn.closest('.settings-row').querySelectorAll('.slip-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function toggleSettings() { document.getElementById('settingsPanel').classList.toggle('hidden'); }
+function toggleRoute() {
+  routeOpen = !routeOpen;
+  document.getElementById('routeDetails').classList.toggle('hidden',!routeOpen);
+  document.getElementById('routeToggle').classList.toggle('open',routeOpen);
+}
+
+// Modal
+function openModal(t) { modalTarget=t; document.getElementById('tokenSearch').value=''; renderTokenList(TOKENS); document.getElementById('tokenModal').classList.remove('hidden'); }
+function closeModal()  { document.getElementById('tokenModal').classList.add('hidden'); }
+function closeModalOutside(e) { if(e.target===document.getElementById('tokenModal')) closeModal(); }
+function filterTokens() { const q=document.getElementById('tokenSearch').value.toLowerCase(); renderTokenList(TOKENS.filter(t=>t.sym.toLowerCase().includes(q)||t.name.toLowerCase().includes(q))); }
+function renderTokenList(toks) {
+  document.getElementById('tokenList').innerHTML = toks.map(t=>`
+    <div class="token-item" onclick="selectToken('${t.sym}')">
+      <div style="width:36px;height:36px;border-radius:50%;background:${t.bg};color:${t.fg};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0">${t.icon}</div>
+      <div class="token-item-info"><div class="token-item-sym">${t.sym}</div><div class="token-item-name">${t.name}</div></div>
+      <div class="token-item-bal">${t.bal>0n?(+fromWei(t.bal,t.dec)).toFixed(4):'—'}</div>
+    </div>`).join('');
+}
+function selectToken(sym) {
+  const t=TOKENS.find(x=>x.sym===sym); if(!t) return;
+  if(modalTarget==='from') { if(t.sym===toTok.sym) [fromTok,toTok]=[toTok,t]; else fromTok=t; }
+  else                     { if(t.sym===fromTok.sym) [fromTok,toTok]=[t,fromTok]; else toTok=t; }
+  renderSelectors(); clearQuoteUI(); onAmountInput(); closeModal();
+}
+
+// Recent txs
+function addRecentTx(from,to,amtIn,amtOut,hash,status) {
+  recentTxs.unshift({from,to,amtIn,amtOut,hash,status});
+  if(recentTxs.length>5) recentTxs.pop();
+  renderRecentTxs();
+}
+function updateRecentTx(hash,status) {
+  const t=recentTxs.find(x=>x.hash===hash); if(t) { t.status=status; renderRecentTxs(); }
+}
+function renderRecentTxs() {
+  const s=document.getElementById('recentSection');
+  if(!recentTxs.length){s.classList.add('hidden');return;}
+  s.classList.remove('hidden');
+  document.getElementById('txList').innerHTML=recentTxs.map(tx=>`
+    <div class="tx-item">
+      <div class="tx-dot ${tx.status}"></div>
+      <div class="tx-info">
+        <div class="tx-pair">${tx.from} → ${tx.to}</div>
+        <div class="tx-meta"><a style="color:var(--neon);text-decoration:none" href="https://cronoscan.com/tx/${tx.hash}" target="_blank">${tx.hash.slice(0,10)}…${tx.hash.slice(-6)} ↗</a></div>
+      </div>
+      <div class="tx-amount">${tx.status==='pending'?'<span class="spinner" style="width:10px;height:10px"></span>':tx.status==='failed'?'<span style="color:var(--red)">Failed</span>':'+'+tx.amtOut.toFixed(4)+' '+tx.to}</div>
+    </div>`).join('');
+}
+
+// Toast
+let toastTimer;
+function toast(icon,title,msg,link,type) {
+  clearTimeout(toastTimer);
+  const cols={success:'rgba(0,245,196,0.3)',error:'rgba(255,77,109,0.3)',warn:'rgba(245,166,35,0.3)',pending:'rgba(123,92,240,0.3)'};
+  document.getElementById('toastIcon').textContent=icon;
+  document.getElementById('toastTitle').textContent=title;
+  document.getElementById('toastMsg').textContent=msg;
+  const lk=document.getElementById('toastLink');
+  link?(lk.href=link,lk.classList.remove('hidden')):lk.classList.add('hidden');
+  const el=document.getElementById('toast');
+  el.style.borderColor=cols[type]||'var(--border)';
+  el.classList.remove('hidden');
+  if(type!=='pending') toastTimer=setTimeout(()=>el.classList.add('hidden'),6000);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════════════
+renderSelectors();
+refreshSwapBtn();
+
+if (window.ethereum) {
+  window.ethereum.request({method:'eth_accounts'}).then(async accs => {
+    if (!accs.length) return;
+    wallet.addr = accs[0]; wallet.connected = true;
+    await ensureCronos().catch(()=>{});
+    refreshConnectBtn(); await loadBalances(); fetchGas(); refreshSwapBtn();
+  }).catch(()=>{});
+  window.ethereum.on('accountsChanged', async accs => {
+    if (!accs.length) { disconnectWallet(); return; }
+    wallet.addr = accs[0]; refreshConnectBtn(); await loadBalances();
+  });
+  window.ethereum.on('chainChanged', ()=>location.reload());
+}
+
+setInterval(()=>{ if(wallet.connected) fetchGas(); }, 15000);
+</script>
+</body>
+</html>
