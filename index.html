@@ -106,9 +106,9 @@ nav::after{
   opacity:0.6;
 }
 .logo{
-  display:flex;align-items:center;gap:10px;
+  display:flex;align-items:center;gap:8px;
   font-family:'Orbitron',monospace;font-size:1.1rem;font-weight:900;
-  letter-spacing:0.08em;flex-shrink:0;cursor:pointer;
+  letter-spacing:0;flex-shrink:0;cursor:pointer;
   text-transform:uppercase;
 }
 .logo-icon{
@@ -175,7 +175,7 @@ nav::after{
 }
 
 /* ── LAYOUT ── */
-main{flex:1;display:flex;flex-direction:column;align-items:center;padding:20px 13px 90px;gap:14px}
+main{flex:1;display:flex;flex-direction:column;align-items:center;padding:20px 13px 100px;gap:14px;scroll-behavior:auto}
 .page{width:100%;max-width:500px;display:none;flex-direction:column;gap:12px;align-items:center}
 .page.active{display:flex}
 
@@ -702,7 +702,7 @@ main{flex:1;display:flex;flex-direction:column;align-items:center;padding:20px 1
 @media(max-width:519px){
   .bnav{display:block}
   .nav-links{display:none}
-  main{padding:16px 11px 84px;gap:11px}
+  main{padding:16px 11px 180px;gap:11px}
   nav{padding:9px 12px}
   .logo{font-size:0.9rem}
   .logo-icon{width:26px;height:26px;overflow:hidden}
@@ -713,23 +713,396 @@ main{flex:1;display:flex;flex-direction:column;align-items:center;padding:20px 1
   .srow{flex-direction:column;align-items:flex-start}
 }
 @media(min-width:520px){.live-badge{display:inline-flex}.bnav{display:none}}
+
+/* ══ NFT MINT PAGE ══ */
+.nft-hero{
+  width:100%;border:1px solid rgba(255,0,128,0.35);border-radius:var(--ra);
+  background:linear-gradient(135deg,rgba(255,0,128,0.07),rgba(119,0,255,0.07));
+  padding:22px 18px;text-align:center;position:relative;overflow:hidden;
+  box-shadow:0 0 40px rgba(255,0,128,0.08);
+}
+.nft-hero::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--n2),var(--n3),transparent);opacity:0.9}
+.nft-hero::after{content:'NEON SYNDICATE';position:absolute;bottom:-18px;left:50%;transform:translateX(-50%);font-family:'Orbitron',monospace;font-size:3.5rem;font-weight:900;color:rgba(255,0,128,0.04);white-space:nowrap;pointer-events:none;letter-spacing:.1em}
+.nft-eyebrow{font-family:'Share Tech Mono',monospace;font-size:0.58rem;color:var(--m);text-transform:uppercase;letter-spacing:.2em;margin-bottom:8px}
+.nft-title{font-family:'Orbitron',monospace;font-size:1.7rem;font-weight:900;letter-spacing:.06em;line-height:1.1;margin-bottom:6px;
+  background:linear-gradient(135deg,var(--n),var(--n2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 12px rgba(0,255,200,0.3));
+}
+.nft-sub{font-size:0.72rem;color:var(--m);font-family:'Share Tech Mono',monospace;margin-bottom:18px}
+
+/* NFT Banner */
+
+
+
+
+  50%{filter:drop-shadow(0 0 28px rgba(0,255,200,0.8)) drop-shadow(0 0 50px rgba(255,0,128,0.5))}
+}
+
+
+/* Countdown */
+.countdown-wrap{display:flex;justify-content:center;gap:8px;margin-bottom:20px}
+.cd-block{
+  background:rgba(0,0,0,0.4);border:1px solid rgba(255,0,128,0.25);border-radius:3px;
+  padding:10px 12px;min-width:58px;text-align:center;position:relative;overflow:hidden;
+}
+.cd-block::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:var(--n2);opacity:0.5}
+.cd-num{font-family:'Orbitron',monospace;font-size:1.4rem;font-weight:900;color:var(--n2);line-height:1;text-shadow:0 0 12px var(--n2)}
+.cd-lbl{font-family:'Share Tech Mono',monospace;font-size:0.5rem;color:var(--m);text-transform:uppercase;letter-spacing:.1em;margin-top:3px}
+.cd-sep{font-family:'Orbitron',monospace;font-size:1.4rem;color:rgba(255,0,128,0.4);align-self:center;padding-bottom:14px;animation:blink 1s infinite}
+
+/* Mint progress */
+.mint-prog-wrap{width:100%;margin-bottom:4px}
+.mint-prog-track{
+  width:100%;height:6px;background:rgba(255,255,255,0.05);border-radius:0;
+  border:1px solid rgba(255,0,128,0.15);overflow:hidden;position:relative;
+}
+.mint-prog-fill{
+  height:100%;background:linear-gradient(90deg,var(--n2),var(--n3),var(--n));
+  transition:width .8s ease;position:relative;
+  box-shadow:0 0 10px rgba(255,0,128,0.5);
+}
+.mint-prog-fill::after{content:'';position:absolute;right:0;top:0;bottom:0;width:3px;background:#fff;opacity:0.8;box-shadow:0 0 6px #fff}
+.mint-prog-labels{display:flex;justify-content:space-between;margin-top:5px;font-family:'Share Tech Mono',monospace;font-size:0.6rem;color:var(--m)}
+.mint-prog-labels span{color:var(--n2);font-weight:700}
+
+/* NFT Stats row */
+.nft-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--b);border-radius:var(--ra);overflow:hidden;width:100%}
+.nft-stat{padding:10px 6px;text-align:center;border-right:1px solid var(--b);background:rgba(0,0,0,0.3)}
+.nft-stat:last-child{border-right:none}
+.nft-stat-val{font-family:'Orbitron',monospace;font-size:0.85rem;font-weight:800;color:var(--n);text-shadow:0 0 8px var(--n);margin-bottom:2px}
+.nft-stat-lbl{font-family:'Share Tech Mono',monospace;font-size:0.52rem;color:var(--m);text-transform:uppercase;letter-spacing:.08em}
+
+/* Mint card */
+.mint-card{
+  width:100%;background:var(--c);border:1px solid var(--b);border-radius:var(--ra);
+  padding:16px;position:relative;overflow:hidden;
+  box-shadow:0 0 25px rgba(0,255,200,0.05);
+}
+.mint-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--n),transparent);opacity:0.5}
+.mint-qty-wrap{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:10px}
+.mint-qty-label{font-family:'Share Tech Mono',monospace;font-size:0.68rem;color:var(--m);text-transform:uppercase;letter-spacing:.1em}
+.mint-qty-ctrl{display:flex;align-items:center;gap:0;border:1px solid var(--b);border-radius:2px;overflow:hidden}
+.qty-btn{
+  width:38px;height:38px;background:rgba(0,255,200,0.04);border:none;
+  color:var(--n);font-size:1.1rem;cursor:pointer;
+  font-family:'Orbitron',monospace;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;
+}
+.qty-btn:hover{background:rgba(0,255,200,0.1);box-shadow:inset 0 0 8px rgba(0,255,200,0.1)}
+.qty-btn:disabled{color:var(--m);cursor:not-allowed;background:transparent}
+.qty-display{
+  width:50px;text-align:center;font-family:'Orbitron',monospace;font-size:1.1rem;
+  font-weight:800;color:var(--n);background:transparent;
+  border-left:1px solid var(--b);border-right:1px solid var(--b);
+  padding:6px 0;text-shadow:0 0 8px var(--n);
+}
+.mint-cost-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding:10px 12px;background:rgba(255,0,128,0.04);border:1px solid rgba(255,0,128,0.15);border-radius:2px}
+.mint-cost-lbl{font-family:'Share Tech Mono',monospace;font-size:0.68rem;color:var(--m)}
+.mint-cost-val{font-family:'Orbitron',monospace;font-size:1rem;font-weight:800;color:var(--n2);text-shadow:0 0 10px var(--n2)}
+.mint-btn{
+  width:100%;padding:15px;background:transparent;
+  border:1px solid var(--n2);border-radius:2px;
+  font-family:'Orbitron',monospace;font-size:0.85rem;font-weight:800;
+  color:var(--n2);cursor:pointer;transition:all .2s;
+  letter-spacing:.1em;text-transform:uppercase;
+  position:relative;overflow:hidden;min-height:52px;
+  clip-path:polygon(14px 0%,100% 0%,100% calc(100% - 14px),calc(100% - 14px) 100%,0% 100%,0% 14px);
+  text-shadow:0 0 12px var(--n2);
+  box-shadow:0 0 25px rgba(255,0,128,0.2),inset 0 0 20px rgba(255,0,128,0.04);
+}
+.mint-btn:hover:not(:disabled){background:rgba(255,0,128,0.12);box-shadow:var(--glow2),inset 0 0 30px rgba(255,0,128,0.08);transform:translateY(-1px)}
+.mint-btn:disabled{border-color:rgba(255,255,255,0.08);color:var(--m);cursor:not-allowed;box-shadow:none;text-shadow:none;transform:none;clip-path:polygon(14px 0%,100% 0%,100% calc(100% - 14px),calc(100% - 14px) 100%,0% 100%,0% 14px)}
+.mint-notice{margin-top:10px;display:flex;align-items:center;gap:7px;font-family:'Share Tech Mono',monospace;font-size:0.63rem;color:var(--m);padding:8px 10px;background:rgba(255,204,0,0.04);border:1px solid rgba(255,204,0,0.15);border-radius:2px}
+
+/* NFT Gallery */
+.nft-gallery-wrap{width:100%}
+.nft-gallery-title{font-family:'Orbitron',monospace;font-size:0.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.12em;color:var(--t2);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.nft-gallery-title::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,rgba(255,0,128,0.3),transparent)}
+.nft-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+/* Animated cyberpunk NFT card */
+.nft-card{
+  border:1px solid rgba(255,0,128,0.2);border-radius:3px;
+  aspect-ratio:1;position:relative;overflow:hidden;cursor:pointer;
+  background:#010308;transition:all .3s;
+}
+.nft-card:hover{border-color:var(--n2);box-shadow:0 0 20px rgba(255,0,128,0.3);transform:translateY(-2px) scale(1.02)}
+.nft-card-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+.nft-card-canvas{width:100%;height:100%;display:block}
+.nft-card-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(0deg,rgba(1,3,8,0.9) 0%,transparent 50%);
+  pointer-events:none;
+}
+.nft-card-num{
+  position:absolute;bottom:6px;left:8px;
+  font-family:'Orbitron',monospace;font-size:0.6rem;font-weight:700;
+  color:var(--n2);text-shadow:0 0 8px var(--n2);
+}
+.nft-card-trait{
+  position:absolute;top:6px;right:6px;
+  font-family:'Share Tech Mono',monospace;font-size:0.5rem;
+  color:var(--n);background:rgba(0,0,0,0.7);border:1px solid rgba(0,255,200,0.2);
+  padding:2px 5px;border-radius:1px;
+}
+/* Scanline on each card */
+.nft-card::after{
+  content:'';position:absolute;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.12) 3px,rgba(0,0,0,0.12) 4px);
+  pointer-events:none;z-index:2;
+  animation:cardscan 4s linear infinite;
+}
+@keyframes cardscan{from{background-position:0 0}to{background-position:0 100%}}
+.nft-card-mint-badge{
+  position:absolute;top:6px;left:6px;
+  font-family:'Orbitron',monospace;font-size:0.45rem;font-weight:800;
+  background:rgba(255,0,128,0.2);border:1px solid rgba(255,0,128,0.5);
+  color:var(--n2);padding:2px 5px;border-radius:1px;text-transform:uppercase;letter-spacing:.05em;
+}
+/* wallet info row */
+.wallet-info-row{
+  width:100%;display:flex;align-items:center;gap:9px;padding:10px 12px;
+  background:rgba(0,255,200,0.03);border:1px solid rgba(0,255,200,0.1);border-radius:var(--ra);
+  font-family:'Share Tech Mono',monospace;font-size:0.68rem;color:var(--m);
+}
+.wallet-info-row span{color:var(--n);font-weight:700}
+
+
+/* ══════════════════════════════════════════
+   NEON SYNDICATE MINT PAGE — REBUILT
+══════════════════════════════════════════ */
+
+/* ── Banner ── */
+.ns-banner{
+  width:100%;position:relative;overflow:hidden;
+  border-radius:var(--ra);
+  border:1px solid rgba(255,0,128,0.4);
+  box-shadow:0 0 40px rgba(255,0,128,0.15),0 0 80px rgba(119,0,255,0.1);
+  min-height:200px;
+  display:flex;align-items:center;justify-content:center;
+}
+.ns-banner-bg{
+  position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse at 20% 50%,rgba(119,0,255,0.25) 0%,transparent 60%),
+    radial-gradient(ellipse at 80% 50%,rgba(255,0,128,0.2) 0%,transparent 60%),
+    radial-gradient(ellipse at 50% 100%,rgba(0,255,200,0.1) 0%,transparent 50%),
+    #010308;
+}
+.ns-banner-lines{
+  position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(0,255,200,0.06) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(0,255,200,0.06) 1px,transparent 1px);
+  background-size:28px 28px;
+  animation:nsGridMove 10s linear infinite;
+}
+@keyframes nsGridMove{from{background-position:0 0}to{background-position:28px 28px}}
+.ns-banner-content{
+  position:relative;z-index:2;
+  text-align:center;padding:22px 18px;width:100%;
+}
+.ns-banner-eyebrow{
+  font-family:'Share Tech Mono',monospace;font-size:0.54rem;
+  color:var(--n);letter-spacing:.2em;text-transform:uppercase;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  margin-bottom:12px;
+}
+.ns-dot{
+  width:5px;height:5px;border-radius:50%;
+  background:var(--n);box-shadow:0 0 6px var(--n);
+  display:inline-block;animation:blink 1.5s infinite;
+}
+.ns-banner-title{
+  font-family:'Orbitron',monospace;
+  font-size:clamp(2rem,10vw,3rem);
+  font-weight:900;line-height:0.95;letter-spacing:.06em;
+  background:linear-gradient(135deg,#ffffff 0%,var(--n) 45%,var(--n2) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 20px rgba(0,255,200,0.5)) drop-shadow(0 0 40px rgba(255,0,128,0.3));
+  animation:nsTitlePulse 3s ease-in-out infinite;
+  margin-bottom:10px;
+}
+@keyframes nsTitlePulse{
+  0%,100%{filter:drop-shadow(0 0 20px rgba(0,255,200,0.5)) drop-shadow(0 0 40px rgba(255,0,128,0.3))}
+  50%{filter:drop-shadow(0 0 30px rgba(0,255,200,0.8)) drop-shadow(0 0 60px rgba(255,0,128,0.5))}
+}
+.ns-banner-tagline{
+  font-family:'Share Tech Mono',monospace;font-size:0.62rem;
+  color:rgba(200,255,240,0.55);letter-spacing:.12em;text-transform:uppercase;
+  margin-bottom:18px;
+}
+.ns-banner-stats{
+  display:flex;align-items:center;justify-content:center;gap:0;
+  background:rgba(0,0,0,0.4);border:1px solid rgba(0,255,200,0.15);
+  border-radius:3px;overflow:hidden;
+}
+.ns-bstat{padding:8px 16px;text-align:center}
+.ns-bstat-v{
+  font-family:'Orbitron',monospace;font-size:0.8rem;font-weight:800;
+  color:var(--n);text-shadow:0 0 8px var(--n);margin-bottom:2px;
+}
+.ns-bstat-l{font-family:'Share Tech Mono',monospace;font-size:0.5rem;color:var(--m);text-transform:uppercase;letter-spacing:.08em}
+.ns-bstat-div{width:1px;background:rgba(0,255,200,0.15);align-self:stretch}
+
+/* ── Shared card ── */
+.ns-card{
+  width:100%;background:var(--c);
+  border:1px solid var(--b);border-radius:var(--ra);
+  padding:16px;position:relative;overflow:hidden;
+  box-shadow:0 0 20px rgba(0,255,200,0.04);
+}
+.ns-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--n),transparent);opacity:0.4;
+}
+.ns-mint-card::before{
+  background:linear-gradient(90deg,transparent,var(--n2),transparent);opacity:0.5;
+}
+.ns-section-label{
+  font-family:'Orbitron',monospace;font-size:0.68rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:.1em;color:var(--t2);
+  margin-bottom:14px;
+}
+
+/* ── Traits ── */
+.ns-traits{display:flex;flex-direction:column;gap:10px}
+.ns-trait{}
+.ns-trait-bar-wrap{
+  height:6px;background:rgba(255,255,255,0.05);
+  border-radius:0;overflow:hidden;margin-bottom:5px;
+  border:1px solid rgba(255,255,255,0.04);
+}
+.ns-trait-bar{height:100%;border-radius:0;box-shadow:0 0 8px currentColor}
+.ns-trait-info{display:flex;justify-content:space-between;align-items:center}
+.ns-trait-name{font-family:'Share Tech Mono',monospace;font-size:0.68rem;color:var(--t2)}
+.ns-trait-pct{font-family:'Orbitron',monospace;font-size:0.65rem;font-weight:700}
+
+/* ── Holder Benefits ── */
+.ns-benefits{display:flex;flex-direction:column;gap:10px}
+.ns-benefit{display:flex;align-items:center;gap:12px}
+.ns-benefit-icon{
+  width:36px;height:36px;flex-shrink:0;
+  border:1px solid;border-radius:3px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;
+}
+.ns-benefit-title{
+  font-family:'Orbitron',monospace;font-size:0.68rem;font-weight:700;
+  color:var(--t2);margin-bottom:2px;letter-spacing:.04em;
+}
+.ns-benefit-desc{font-family:'Share Tech Mono',monospace;font-size:0.6rem;color:var(--m)}
+
+
+/* ── Horizontal Countdown ── */
+.ns-cd-card{ padding:12px 16px; }
+.ns-cd-row{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+}
+.ns-cd-label{
+  font-family:'Share Tech Mono',monospace;font-size:0.55rem;
+  color:var(--m);text-transform:uppercase;letter-spacing:.1em;
+  flex-shrink:0;
+}
+.ns-cd-blocks{
+  display:flex;align-items:center;gap:4px;
+}
+.ns-cd-blocks .cd-block{
+  background:rgba(255,0,128,0.08);border:1px solid rgba(255,0,128,0.2);
+  border-radius:2px;padding:6px 8px;min-width:36px;text-align:center;
+}
+.ns-cd-blocks .cd-num{
+  font-family:'Orbitron',monospace;font-size:1rem;font-weight:900;
+  color:var(--n2);line-height:1;text-shadow:0 0 10px var(--n2);
+}
+.ns-cd-blocks .cd-lbl{
+  font-family:'Share Tech Mono',monospace;font-size:0.42rem;
+  color:var(--m);text-transform:uppercase;letter-spacing:.08em;margin-top:2px;
+}
+.ns-cd-blocks .cd-sep{
+  font-family:'Orbitron',monospace;font-size:1rem;
+  color:rgba(255,0,128,0.5);animation:blink 1s infinite;
+  padding-bottom:10px;
+}
 </style>
+  <!-- Firebase -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, getDocs, query, orderBy, limit, onSnapshot }
+      from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDsYORaUegjEke16Dbo1piyQaK2me9xX3w",
+      authDomain: "neonfi-5726f.firebaseapp.com",
+      projectId: "neonfi-5726f",
+      storageBucket: "neonfi-5726f.firebasestorage.app",
+      messagingSenderId: "108104143916",
+      appId: "1:108104143916:web:b90e3e48e75766509aed89"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db  = getFirestore(app);
+    const swapsCol = collection(db, 'swaps');
+
+    // Save a swap to Firestore
+    window.saveSwapToFirebase = async function(swap) {
+      try {
+        await addDoc(swapsCol, swap);
+      } catch(e) {
+        console.warn('Firebase save error:', e);
+      }
+    };
+
+    // Load all swaps and seed into dexStats
+    window.loadSwapsFromFirebase = async function() {
+      try {
+        const q = query(swapsCol, orderBy('ts', 'desc'), limit(500));
+        const snap = await getDocs(q);
+        const loaded = [];
+        snap.forEach(doc => loaded.push(doc.data()));
+        // Merge into dexStats (avoid dupes by hash)
+        const existing = new Set(dexStats.swaps.map(s => s.hash));
+        loaded.forEach(s => {
+          if(!existing.has(s.hash)) {
+            dexStats.swaps.push(s);
+            dexStats.traders.add(s.addr);
+          }
+        });
+        dexStats.swaps.sort((a,b) => a.ts - b.ts);
+        refreshSwapStats();
+        console.log('Firebase: loaded', loaded.length, 'swaps');
+      } catch(e) {
+        console.warn('Firebase load error:', e);
+      }
+    };
+
+    // Live listener — update analytics/leaderboard when new swaps arrive
+    window.listenSwaps = function() {
+      const q = query(swapsCol, orderBy('ts', 'desc'), limit(500));
+      onSnapshot(q, (snap) => {
+        const all = [];
+        snap.forEach(doc => all.push(doc.data()));
+        // Rebuild dexStats.swaps from Firestore
+        dexStats.swaps = all.sort((a,b) => a.ts - b.ts);
+        dexStats.traders = new Set(all.map(s => s.addr));
+        refreshSwapStats();
+      });
+    };
+  </script>
 </head>
 <body>
-<div class="bg-grid"></div><div class="orb1"></div><div class="orb2"></div>
+<canvas id="bgCanvas" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:0.25"></canvas>
+<canvas id="bgCity" style="position:fixed;inset:0;width:100%;height:100%;z-index:0;opacity:0.25;pointer-events:none"></canvas><div class="bg-grid"></div><div class="orb1"></div><div class="orb2"></div>
 <div class="app">
 
 <!-- NAV -->
 <nav>
-  <div class="logo" onclick="go('swap')">
-    <div class="logo-icon" style="background:none;padding:0;overflow:hidden"><img src="neonfi-logo.png" alt="NeonFi" style="width:28px;height:28px;object-fit:contain;border-radius:6px" onerror="this.parentElement.innerHTML='⚡'"/></div>Neon<em>Fi</em>
-    <span class="live-badge"><span class="live-dot"></span>LIVE</span>
-  </div>
+  <div class="logo" onclick="go('swap')"><div class="logo-icon" style="background:none;padding:0;overflow:hidden"><img src="neonfi-logo.png" alt="NeonFi" style="width:28px;height:28px;object-fit:contain;border-radius:6px" onerror="this.parentElement.innerHTML='⚡'"/></div><span style="font-family:'Rajdhani',sans-serif;font-weight:700;font-size:1.2rem;letter-spacing:0;color:var(--n);text-shadow:0 0 8px var(--n),0 0 20px var(--n),0 0 40px rgba(0,255,200,0.4);animation:logoflicker 4s infinite">NEON_FI</span><span class="live-badge" style="margin-left:6px"><span class="live-dot"></span>LIVE</span></div>
   <div class="nav-links">
     <button class="nl active" data-page="swap"        onclick="go('swap')">Swap</button>
     <button class="nl"        data-page="analytics"   onclick="go('analytics')">Analytics</button>
     <button class="nl"        data-page="lottery"     onclick="go('lottery')">Lottery</button>
     <button class="nl"        data-page="leaderboard" onclick="go('leaderboard')">Leaderboard</button>
+    <button class="nl"        data-page="nft"          onclick="go('nft')">Mint</button>
   </div>
   <button class="cb" id="cb" onclick="toggleWallet()">Connect Wallet</button>
 </nav>
@@ -917,6 +1290,167 @@ main{flex:1;display:flex;flex-direction:column;align-items:center;padding:20px 1
 </main>
 </div>
 
+<!-- ══ NFT MINT ══ -->
+<div class="page" id="page-nft">
+
+  <!-- ══ SECTION 1: BANNER ══ -->
+  <div class="ns-banner">
+    <div class="ns-banner-bg"></div>
+    <div class="ns-banner-lines"></div>
+    <div class="ns-banner-content">
+      <div class="ns-banner-eyebrow">
+        <span class="ns-dot"></span>CRONOS MAINNET · ERC-721<span class="ns-dot"></span>
+      </div>
+      <div class="ns-banner-title">NEON<br>SYNDICATE</div>
+      <div class="ns-banner-tagline">100 Unique Cyberpunk Warriors</div>
+      <div class="ns-banner-stats">
+        <div class="ns-bstat"><div class="ns-bstat-v">100</div><div class="ns-bstat-l">Supply</div></div>
+        <div class="ns-bstat-div"></div>
+        <div class="ns-bstat"><div class="ns-bstat-v">200 CRO</div><div class="ns-bstat-l">Mint Price</div></div>
+        <div class="ns-bstat-div"></div>
+        <div class="ns-bstat"><div class="ns-bstat-v">2</div><div class="ns-bstat-l">Max / Wallet</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SECTION 2: COUNTDOWN ══ -->
+  <div class="ns-card ns-cd-card">
+    <div class="ns-cd-row">
+      <div class="ns-cd-label">⏱ MINT OPENS IN</div>
+      <div class="ns-cd-blocks">
+        <div class="cd-block"><div class="cd-num" id="cd-d">00</div><div class="cd-lbl">D</div></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-block"><div class="cd-num" id="cd-h">00</div><div class="cd-lbl">H</div></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-block"><div class="cd-num" id="cd-m">00</div><div class="cd-lbl">M</div></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-block"><div class="cd-num" id="cd-s">00</div><div class="cd-lbl">S</div></div>
+      </div>
+    </div>
+    <div class="mint-prog-wrap" style="margin-bottom:0;margin-top:10px">
+      <div class="mint-prog-track"><div class="mint-prog-fill" id="mintProgFill" style="width:0%"></div></div>
+      <div class="mint-prog-labels"><span id="mintedCount">0</span> / 100 minted &nbsp;·&nbsp; <span id="mintedPct">0%</span> sold</div>
+    </div>
+  </div>
+
+  <!-- ══ SECTION 3: MINT CARD ══ -->
+  <div class="ns-card ns-mint-card">
+    <div class="ns-section-label">🎨 Mint Your NFT</div>
+    <div id="mintWalletMinted" style="font-family:'Share Tech Mono',monospace;font-size:0.62rem;color:var(--m);margin-bottom:14px"></div>
+
+    <!-- Qty selector -->
+    <div class="mint-qty-wrap">
+      <div class="mint-qty-label">Quantity</div>
+      <div class="mint-qty-ctrl">
+        <button class="qty-btn" id="qtyMinus" onclick="changeQty(-1)">−</button>
+        <div class="qty-display" id="qtyDisplay">1</div>
+        <button class="qty-btn" id="qtyPlus" onclick="changeQty(1)">+</button>
+      </div>
+    </div>
+
+    <!-- Cost -->
+    <div class="mint-cost-row">
+      <div class="mint-cost-lbl">Total Cost</div>
+      <div class="mint-cost-val" id="mintTotalCost">200 CRO</div>
+    </div>
+
+    <!-- Mint button -->
+    <button class="mint-btn" id="mintBtn" onclick="handleMint()">
+      <span class="shine"></span>
+      <span id="mintBtnTxt">Connect Wallet to Mint</span>
+    </button>
+
+    <div class="mint-notice">⚠ Max 2 per wallet · 200 CRO each · Cronos Mainnet</div>
+
+    <!-- Wallet row -->
+    <div class="wallet-info-row hidden" id="mintWalletRow">
+      <span>🔗</span>
+      <span id="mintWalletAddr">—</span>
+      <span style="margin-left:auto">Minted: <span id="mintWalletCount">0</span> / 2</span>
+    </div>
+  </div>
+
+  <!-- ══ SECTION 4: TRAITS BREAKDOWN ══ -->
+  <div class="ns-card">
+    <div class="ns-section-label">◈ Rarity Traits</div>
+    <div class="ns-traits">
+      <div class="ns-trait">
+        <div class="ns-trait-bar-wrap">
+          <div class="ns-trait-bar" style="width:55%;background:linear-gradient(90deg,#3a5a4a,#00ffc8)"></div>
+        </div>
+        <div class="ns-trait-info">
+          <span class="ns-trait-name">Common</span>
+          <span class="ns-trait-pct" style="color:#00ffc8">55%</span>
+        </div>
+      </div>
+      <div class="ns-trait">
+        <div class="ns-trait-bar-wrap">
+          <div class="ns-trait-bar" style="width:28%;background:linear-gradient(90deg,#1a2a5a,#4477ff)"></div>
+        </div>
+        <div class="ns-trait-info">
+          <span class="ns-trait-name">Rare</span>
+          <span class="ns-trait-pct" style="color:#4477ff">28%</span>
+        </div>
+      </div>
+      <div class="ns-trait">
+        <div class="ns-trait-bar-wrap">
+          <div class="ns-trait-bar" style="width:13%;background:linear-gradient(90deg,#3a1a5a,#c084fc)"></div>
+        </div>
+        <div class="ns-trait-info">
+          <span class="ns-trait-name">Epic</span>
+          <span class="ns-trait-pct" style="color:#c084fc">13%</span>
+        </div>
+      </div>
+      <div class="ns-trait">
+        <div class="ns-trait-bar-wrap">
+          <div class="ns-trait-bar" style="width:4%;background:linear-gradient(90deg,#3a2a00,#ffcc00)"></div>
+        </div>
+        <div class="ns-trait-info">
+          <span class="ns-trait-name">Legendary</span>
+          <span class="ns-trait-pct" style="color:#ffcc00">4%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SECTION 5: HOLDER BENEFITS ══ -->
+  <div class="ns-card" style="margin-bottom:16px">
+    <div class="ns-section-label">⚡ Holder Benefits</div>
+    <div class="ns-benefits">
+      <div class="ns-benefit">
+        <div class="ns-benefit-icon" style="background:rgba(0,255,200,0.1);border-color:rgba(0,255,200,0.3);color:var(--n)">🗳</div>
+        <div class="ns-benefit-text">
+          <div class="ns-benefit-title">NeonFi DAO Vote</div>
+          <div class="ns-benefit-desc">Governance rights on protocol decisions</div>
+        </div>
+      </div>
+      <div class="ns-benefit">
+        <div class="ns-benefit-icon" style="background:rgba(255,204,0,0.1);border-color:rgba(255,204,0,0.3);color:var(--w)">💰</div>
+        <div class="ns-benefit-text">
+          <div class="ns-benefit-title">Fee Share Rewards</div>
+          <div class="ns-benefit-desc">Earn a cut of NeonFi swap fees</div>
+        </div>
+      </div>
+      <div class="ns-benefit">
+        <div class="ns-benefit-icon" style="background:rgba(119,0,255,0.1);border-color:rgba(119,0,255,0.3);color:#c084fc">🎯</div>
+        <div class="ns-benefit-text">
+          <div class="ns-benefit-title">Whitelist Priority</div>
+          <div class="ns-benefit-desc">Early access to future collections</div>
+        </div>
+      </div>
+      <div class="ns-benefit">
+        <div class="ns-benefit-icon" style="background:rgba(255,0,128,0.1);border-color:rgba(255,0,128,0.3);color:var(--n2)">🎁</div>
+        <div class="ns-benefit-text">
+          <div class="ns-benefit-title">Exclusive Drops</div>
+          <div class="ns-benefit-desc">Members-only airdrops and rewards</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+
 <!-- Bottom nav -->
 <div class="bnav">
   <div class="bni">
@@ -924,6 +1458,7 @@ main{flex:1;display:flex;flex-direction:column;align-items:center;padding:20px 1
     <button class="bna"        data-page="analytics"   onclick="go('analytics')"><div class="bnic">📊</div>Analytics</button>
     <button class="bna"        data-page="lottery"     onclick="go('lottery')"><div class="bnic">🎟</div>Lottery</button>
     <button class="bna"        data-page="leaderboard" onclick="go('leaderboard')"><div class="bnic">🏆</div>Ranks</button>
+    <button class="bna"        data-page="nft"          onclick="go('nft')"><div class="bnic">🎨</div>Mint</button>
   </div>
 </div>
 
@@ -962,10 +1497,7 @@ const LOTTERY_WALLET   = '0x2b306848f70378ef2B9bf8B86C7D964f32001B93'; // Your w
 // ── PROTOCOL FEE CONFIG ──────────────────────────────────────────
 // Replace FEE_RECIPIENT with YOUR wallet address to receive fees
 const FEE_RECIPIENT  = '0x2b306848f70378ef2B9bf8B86C7D964f32001B93';
-const FEE_BPS        = 10;   // 10 basis points = 0.1%  (1 bp = 0.01%)
-//   Examples: 5 = 0.05%  |  10 = 0.1%  |  25 = 0.25%  |  50 = 0.5%
-// Fee only applies to CRO-input swaps (CRO→Token).
-// For Token→Token swaps the fee is skipped (no on-chain CRO to intercept cleanly).
+const FEE_BPS        = 100;  // 100 basis points = 1%
 const FEE_ENABLED    = FEE_RECIPIENT !== '0x0000000000000000000000000000000000000000';
 // ────────────────────────────────────────────────────────────────
 
@@ -1073,9 +1605,13 @@ function go(page){
   document.getElementById('page-'+page).classList.add('active');
   document.querySelectorAll('.nl').forEach(l=>l.classList.toggle('active',l.dataset.page===page));
   document.querySelectorAll('.bna').forEach(l=>l.classList.toggle('active',l.dataset.page===page));
+  // Always scroll to top when switching pages
+  window.scrollTo({top:0,behavior:'instant'});
+  document.querySelector('main').scrollTop = 0;
   if(page==='analytics')   refreshAnalytics();
   if(page==='leaderboard') refreshLeaderboard();
   if(page==='lottery')     refreshLottery();
+  if(page==='nft')         initNftPage();
 }
 
 // ═══════════════════════════════════════════════════════════════
@@ -1143,12 +1679,13 @@ async function runQuotes(){
   document.getElementById('dr').textContent=`1 ${fromTok.sym} = ${rate.toFixed(8)} ${toTok.sym}`;
   document.getElementById('dmin').textContent=(+frW(bestQ.amtOutMin,toTok.dec)).toFixed(6)+' '+toTok.sym;
   document.getElementById('dslip').textContent=slip+'%';
-  // Protocol fee display
-  if(FEE_ENABLED && fromTok.addr==='NATIVE'){
+  // Protocol fee display — 1% on ALL swap types
+  if(FEE_ENABLED){
     const feeAmt=(parseFloat(amtStr)*FEE_BPS/10000).toFixed(6);
-    document.getElementById('dFee').textContent=`${feeAmt} CRO (${FEE_BPS/100}%)`;
+    const feeCur=fromTok.addr==='NATIVE'?'CRO':fromTok.sym;
+    document.getElementById('dFee').textContent=`${feeAmt} ${feeCur} (${FEE_BPS/100}%)`;
   } else {
-    document.getElementById('dFee').textContent=FEE_ENABLED?'Token swaps: no fee':'Disabled';
+    document.getElementById('dFee').textContent='Disabled';
   }
   document.getElementById('dpath').textContent=bestQ.path.length===2?`${fromTok.sym}→${toTok.sym}`:`${fromTok.sym}→WCRO→${toTok.sym}`;
   document.getElementById('drouter').textContent=bestQ.dex.router;
@@ -1195,12 +1732,15 @@ async function execSwap(){
   // For token-input swaps we skip it — deducting ERC20 on-chain
   // without a contract requires an extra transferFrom step which
   // would need a pre-deployed contract. CRO fee is a simple value transfer.
-  const chargeFee = FEE_ENABLED && fN;
-  const feeCRO    = chargeFee ? amtNum * FEE_BPS / 10000 : 0;
-  const swapCRO   = chargeFee ? amtNum - feeCRO : amtNum;
+  const chargeFee   = FEE_ENABLED; // 1% fee on ALL swap types
+  const feeRatio    = chargeFee ? FEE_BPS / 10000 : 0;
+  const feeAmt      = chargeFee ? amtNum * feeRatio : 0;  // fee in input token/CRO
+  const feeCRO      = chargeFee && fN ? feeAmt : 0;       // CRO fee (for CRO-input)
+  const feeToken    = chargeFee && !fN ? feeAmt : 0;      // Token fee (for token-input)
+  const swapAmt     = amtNum - feeAmt;                    // amount after fee deducted
+  const feeWeiToken = fN ? 0n : toW(feeToken.toFixed(fromTok.dec), fromTok.dec);
 
-  const ai        = toW(swapCRO.toFixed(fromTok.dec), fromTok.dec); // amount after fee
-  const feeWei    = toW(feeCRO.toFixed(18), 18);
+  const ai        = toW(swapAmt.toFixed(fromTok.dec), fromTok.dec); // amount after fee
 
   // Rebuild amtOutMin against the post-fee swap amount
   // (bestQ.amtOutMin was calculated on full amtIn — recalc proportionally)
@@ -1223,23 +1763,38 @@ async function execSwap(){
   try{
     document.getElementById('swapBtn').disabled=true;
 
-    // ── Step 1: Send fee (CRO swaps only) ─────────────────────
-    if(chargeFee && feeCRO > 0){
+    // ── Step 1: Send fee (ALL swap types) ──────────────────────
+    if(chargeFee && feeAmt > 0){
       document.getElementById('swapTxt').innerHTML='<span class="sp2"></span>Step 1/2: Pay fee…';
-      toast('💰','Protocol Fee',`Sending ${feeCRO.toFixed(6)} CRO fee (${FEE_BPS/100}%)…`,'','pending');
-      const feeTx = await window.ethereum.request({
-        method:'eth_sendTransaction',
-        params:[{from:W.addr, to:FEE_RECIPIENT, value:'0x'+feeWei.toString(16), data:'0x'}]
-      });
-      // Wait for fee tx to confirm before swap
+      let feeTx;
+      if(fN){
+        // CRO → Token: send CRO fee
+        const feeWeiCRO = toW(feeCRO.toFixed(18), 18);
+        toast('💰','Protocol Fee',`Sending ${feeCRO.toFixed(6)} CRO fee (1%)…`,'','pending');
+        feeTx = await window.ethereum.request({
+          method:'eth_sendTransaction',
+          params:[{from:W.addr, to:FEE_RECIPIENT, value:'0x'+feeWeiCRO.toString(16), data:'0x'}]
+        });
+      } else {
+        // Token → Token or Token → CRO: send ERC20 token fee via transfer(to, amount)
+        // ERC20 transfer selector: 0xa9059cbb
+        const feeWeiTok = feeWeiToken;
+        const transferData = '0xa9059cbb'
+          + FEE_RECIPIENT.slice(2).padStart(64,'0')
+          + feeWeiTok.toString(16).padStart(64,'0');
+        toast('💰','Protocol Fee',`Sending ${feeToken.toFixed(6)} ${fromTok.sym} fee (1%)…`,'','pending');
+        feeTx = await window.ethereum.request({
+          method:'eth_sendTransaction',
+          params:[{from:W.addr, to:fromTok.addr, data:transferData}]
+        });
+      }
       document.getElementById('swapTxt').innerHTML='<span class="sp2"></span>Confirming fee…';
       const feeRec = await pollRec(feeTx);
       if(!feeRec || feeRec.status!=='0x1'){
         toast('❌','Fee Failed','Fee transaction did not confirm','https://cronoscan.com/tx/'+feeTx,'error');
         return;
       }
-      // Track fee collected
-      dexStats.feesCollectedCRO = (dexStats.feesCollectedCRO||0) + feeCRO;
+      dexStats.feesCollectedCRO = (dexStats.feesCollectedCRO||0) + (fN ? feeCRO : feeToken);
     }
 
     // ── Step 2: Execute the swap ───────────────────────────────
@@ -1258,15 +1813,18 @@ async function execSwap(){
     if(ok){
       // Record in DEX stats
       const amtInCRO = fN ? amtNum : (tN ? outAmt : amtNum);
-      dexStats.swaps.push({
+      const swapRecord = {
         from:fromTok.sym, to:toTok.sym,
         amtIn:amtNum, amtOut:outAmt, amtInCRO,
         fee:feeCRO, pair:`${fromTok.sym}/${toTok.sym}`,
         addr:W.addr, ts:Date.now(), hash, dex:bestQ.dex.name
-      });
+      };
+      dexStats.swaps.push(swapRecord);
       dexStats.traders.add(W.addr);
+      // Save to Firebase so all wallets/sessions see this swap
+      if(typeof window.saveSwapToFirebase === 'function') window.saveSwapToFirebase(swapRecord);
       refreshSwapStats();
-      const feeNote = feeCRO>0 ? ` · Fee: ${feeCRO.toFixed(4)} CRO` : '';
+      const feeNote = feeAmt>0 ? ` · Fee: ${feeAmt.toFixed(4)} ${fN?'CRO':fromTok.sym}` : '';
       toast('✅','Swap Complete!',`${amtStr} ${fromTok.sym} → ${outAmt.toFixed(4)} ${toTok.sym}${feeNote}`,'https://cronoscan.com/tx/'+hash,'success');
       document.getElementById('fromAmt').value='';
       clearQuoteUI();
@@ -1702,6 +2260,17 @@ rfLBtn();
 fetchLogos();
 refreshLottery();
 
+// Load swaps from Firebase + start live listener
+(function waitForFirebase(attempts){
+  if(attempts > 20) return;
+  if(typeof window.loadSwapsFromFirebase === 'function'){
+    window.loadSwapsFromFirebase();
+    window.listenSwaps();
+  } else {
+    setTimeout(() => waitForFirebase(attempts + 1), 300);
+  }
+})(0);
+
 if(window.ethereum){
   window.ethereum.request({method:'eth_accounts'}).then(async accs=>{
     if(!accs.length)return;
@@ -1716,6 +2285,798 @@ if(window.ethereum){
   window.ethereum.on('chainChanged',()=>location.reload());
 }
 setInterval(()=>{if(W.connected)fetchGas();},15000);
+
+// ═══════════════════════════════════════════════════════════════
+// NFT MINT — NEON SYNDICATE
+// ═══════════════════════════════════════════════════════════════
+const NFT = {
+  MINT_DATE:    new Date('2026-05-01T18:00:00Z'), // ← SET YOUR MINT DATE HERE
+  PRICE_CRO:    200,
+  MAX_SUPPLY:   100,
+  MAX_WALLET:   2,
+  RECEIVER:     '0x2b306848f70378ef2B9bf8B86C7D964f32001B93', // Your wallet receives mint funds
+  CONTRACT:     '',   // ← Paste deployed ERC-721 contract address here when ready
+  minted:       0,    // simulated — replace with on-chain read when contract live
+  qty:          1,
+  walletMinted: 0,
+  cdInterval:   null,
+  cardsDrawn:   false,
+};
+
+const NFT_TRAITS = {
+  factions: ['CHROME GHOST','IRON VEIL','NEON CARTEL','VOID RUNNERS','STATIC QUEEN'],
+  types:    ['CYBORG','HACKER','ENFORCER','PHANTOM','ORACLE'],
+  rarity:   ['COMMON','COMMON','COMMON','RARE','RARE','EPIC','LEGENDARY'],
+};
+
+// Seeded RNG for deterministic card art per token ID
+function seededRng(seed){
+  let s=seed;
+  return()=>{s=(s*16807+0)%2147483647;return(s-1)/2147483646;};
+}
+
+// ── Draw a single animated NFT card onto a canvas ──────────────
+function drawNftCard(canvas, id){
+  const ctx = canvas.getContext('2d');
+  const CW = canvas.width  = canvas.offsetWidth  * (window.devicePixelRatio||1);
+  const CH = canvas.height = canvas.offsetHeight * (window.devicePixelRatio||1);
+  const rng = seededRng(id * 7919 + 13);
+
+  // 5 distinct cyberpunk palettes
+  const palettes = [
+    ['#00ffc8','#ff0080','#7700ff'],
+    ['#ff0080','#ffcc00','#ff6400'],
+    ['#7700ff','#00ffc8','#ff0080'],
+    ['#ffcc00','#ff0080','#00ffc8'],
+    ['#00cfff','#7700ff','#00ffc8'],
+  ];
+  const pal = palettes[id % palettes.length];
+  const [c1,c2,c3] = pal;
+
+  // 6 distinct character archetypes
+  const archetypes = ['CYBORG','HACKER','ENFORCER','PHANTOM','ORACLE','GHOST'];
+  const archetype  = archetypes[(id-1) % archetypes.length];
+
+  // Particle system
+  const PTCL = Array.from({length:14},(_,i)=>{
+    const r2 = seededRng(id*31+i*7);
+    return {x:r2()*CW,y:r2()*CH,vx:(r2()-0.5)*0.4,vy:(r2()-0.5)*0.4,r:r2()*2+0.5,c:pal[i%3]};
+  });
+
+  // Data streams (vertical falling lines)
+  const STREAMS = Array.from({length:6},(_,i)=>{
+    const r2=seededRng(id*53+i*11);
+    return {x:r2()*CW,y:r2()*CH,speed:0.8+r2()*1.2,len:CH*0.18,c:pal[i%3]};
+  });
+
+  let frame=0;
+  const tick=()=>{
+    frame++;
+    const t=frame*0.012;
+    ctx.clearRect(0,0,CW,CH);
+
+    // ── Background ──
+    const bg=ctx.createLinearGradient(0,0,CW,CH);
+    bg.addColorStop(0,'#010308');
+    bg.addColorStop(0.6,`rgba(${hexToRgb(c3)},0.07)`);
+    bg.addColorStop(1,'#010308');
+    ctx.fillStyle=bg; ctx.fillRect(0,0,CW,CH);
+
+    // ── Scanlines ──
+    ctx.fillStyle='rgba(0,0,0,0.18)';
+    for(let y=0;y<CH;y+=3){ctx.fillRect(0,y,CW,1);}
+
+    // ── Grid ──
+    ctx.strokeStyle=`rgba(${hexToRgb(c1)},0.07)`;
+    ctx.lineWidth=0.5;
+    const gs=CW/5;
+    for(let x=0;x<=CW;x+=gs){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,CH);ctx.stroke();}
+    for(let y=0;y<=CH;y+=gs){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(CW,y);ctx.stroke();}
+
+    // ── Data stream particles ──
+    STREAMS.forEach(s=>{
+      s.y=(s.y+s.speed)%CH;
+      const sg=ctx.createLinearGradient(0,s.y-s.len,0,s.y);
+      sg.addColorStop(0,'transparent');
+      sg.addColorStop(1,`rgba(${hexToRgb(s.c)},0.35)`);
+      ctx.strokeStyle=sg; ctx.lineWidth=0.8;
+      ctx.beginPath();ctx.moveTo(s.x,s.y-s.len);ctx.lineTo(s.x,s.y);ctx.stroke();
+      ctx.fillStyle=s.c; ctx.shadowColor=s.c; ctx.shadowBlur=4;
+      ctx.fillRect(s.x-0.5,s.y-1,1,2);
+      ctx.shadowBlur=0;
+    });
+
+    // ── Central figure — archetype-specific geometry ──
+    const cx=CW/2, cy=CH*0.44;
+    const pulse=1+Math.sin(t*1.8)*0.04;
+    const R=CW*0.22*pulse;
+    ctx.shadowBlur=0;
+
+    // Outer energy ring
+    const outerGrd=ctx.createRadialGradient(cx,cy,R*0.4,cx,cy,R*2);
+    outerGrd.addColorStop(0,`rgba(${hexToRgb(c1)},0.25)`);
+    outerGrd.addColorStop(0.5,`rgba(${hexToRgb(c2)},0.08)`);
+    outerGrd.addColorStop(1,'transparent');
+    ctx.fillStyle=outerGrd;
+    ctx.beginPath();ctx.arc(cx,cy,R*2,0,Math.PI*2);ctx.fill();
+
+    // Archetype shape
+    ctx.save(); ctx.translate(cx,cy);
+    if(archetype==='CYBORG'||archetype==='ENFORCER'){
+      // Rotating hexagon
+      ctx.rotate(t*0.25);
+      ctx.beginPath();
+      for(let i=0;i<6;i++){const a=i*(Math.PI/3)-Math.PI/6;i===0?ctx.moveTo(Math.cos(a)*R,Math.sin(a)*R):ctx.lineTo(Math.cos(a)*R,Math.sin(a)*R);}
+      ctx.closePath();
+      ctx.strokeStyle=c1;ctx.lineWidth=CW*0.015;ctx.shadowColor=c1;ctx.shadowBlur=CW*0.05;ctx.stroke();
+      // Inner diamond
+      ctx.rotate(-t*0.5);
+      ctx.beginPath();
+      [[0,-R*0.55],[R*0.55,0],[0,R*0.55],[-R*0.55,0]].forEach(([x,y],i)=>i===0?ctx.moveTo(x,y):ctx.lineTo(x,y));
+      ctx.closePath();
+      ctx.strokeStyle=c2;ctx.lineWidth=CW*0.01;ctx.shadowColor=c2;ctx.shadowBlur=CW*0.04;ctx.stroke();
+    } else if(archetype==='HACKER'||archetype==='GHOST'){
+      // Spinning square + inner square
+      ctx.rotate(t*0.3+Math.PI/4);
+      ctx.beginPath();ctx.rect(-R,-R,R*2,R*2);
+      ctx.strokeStyle=c1;ctx.lineWidth=CW*0.013;ctx.shadowColor=c1;ctx.shadowBlur=CW*0.05;ctx.stroke();
+      ctx.rotate(-t*0.6);
+      ctx.beginPath();ctx.rect(-R*0.55,-R*0.55,R*1.1,R*1.1);
+      ctx.strokeStyle=c2;ctx.lineWidth=CW*0.008;ctx.shadowColor=c2;ctx.shadowBlur=CW*0.04;ctx.stroke();
+    } else if(archetype==='PHANTOM'||archetype==='ORACLE'){
+      // Counter-rotating triangles
+      ctx.rotate(t*0.3);
+      ctx.beginPath();
+      for(let i=0;i<3;i++){const a=i*(Math.PI*2/3)-Math.PI/2;i===0?ctx.moveTo(Math.cos(a)*R,Math.sin(a)*R):ctx.lineTo(Math.cos(a)*R,Math.sin(a)*R);}
+      ctx.closePath();
+      ctx.strokeStyle=c1;ctx.lineWidth=CW*0.014;ctx.shadowColor=c1;ctx.shadowBlur=CW*0.05;ctx.stroke();
+      ctx.rotate(-t*0.6);
+      ctx.beginPath();
+      for(let i=0;i<3;i++){const a=i*(Math.PI*2/3)+Math.PI/2;i===0?ctx.moveTo(Math.cos(a)*R*0.6,Math.sin(a)*R*0.6):ctx.lineTo(Math.cos(a)*R*0.6,Math.sin(a)*R*0.6);}
+      ctx.closePath();
+      ctx.strokeStyle=c2;ctx.lineWidth=CW*0.009;ctx.shadowColor=c2;ctx.shadowBlur=CW*0.04;ctx.stroke();
+    }
+    ctx.restore();
+    ctx.shadowBlur=0;
+
+    // ── Orbiting dots ──
+    const numDots=3+id%2;
+    for(let i=0;i<numDots;i++){
+      const a=t*(0.9+i*0.1)+i*(Math.PI*2/numDots);
+      const or=R*(1.1+i*0.12);
+      const px=cx+Math.cos(a)*or, py=cy+Math.sin(a)*or;
+      const ps=CW*(0.016+Math.sin(t*2+i)*0.006);
+      const dg=ctx.createRadialGradient(px,py,0,px,py,ps*2.5);
+      dg.addColorStop(0,pal[i%3]); dg.addColorStop(1,'transparent');
+      ctx.fillStyle=dg;
+      ctx.beginPath();ctx.arc(px,py,ps*2.5,0,Math.PI*2);ctx.fill();
+    }
+
+    // ── Floating particles ──
+    PTCL.forEach(p=>{
+      p.x=(p.x+p.vx+CW)%CW; p.y=(p.y+p.vy+CH)%CH;
+      ctx.fillStyle=`rgba(${hexToRgb(p.c)},0.5)`;
+      ctx.shadowColor=p.c; ctx.shadowBlur=4;
+      ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fill();
+      ctx.shadowBlur=0;
+    });
+
+    // ── Glitch effect (occasional) ──
+    if(Math.sin(frame*0.07+id)>0.94){
+      const gy=(frame*3+id*20)%CH;
+      const gH=CH*0.025;
+      ctx.fillStyle=`rgba(${hexToRgb(c1)},0.15)`;
+      ctx.fillRect(0,gy,CW,gH);
+      // Horizontal offset glitch slice
+      const slice=ctx.getImageData(0,gy,CW,gH);
+      ctx.putImageData(slice,CW*0.03,gy);
+    }
+    if(Math.sin(frame*0.05+id*2)>0.97){
+      const gy2=(frame*5+id*40)%CH;
+      ctx.fillStyle=`rgba(${hexToRgb(c2)},0.1)`;
+      ctx.fillRect(0,gy2,CW,CH*0.012);
+    }
+
+    // ── Bottom scan line sweep ──
+    const scanY=((frame*1.5)%CH);
+    const scanGrd=ctx.createLinearGradient(0,scanY-CH*0.04,0,scanY);
+    scanGrd.addColorStop(0,'transparent');
+    scanGrd.addColorStop(1,`rgba(${hexToRgb(c1)},0.08)`);
+    ctx.fillStyle=scanGrd; ctx.fillRect(0,scanY-CH*0.04,CW,CH*0.04);
+
+    // ── Corner brackets ──
+    const bL=CW*0.13, bW=CW*0.009;
+    ctx.shadowColor=c1; ctx.shadowBlur=CW*0.025;
+    ctx.strokeStyle=c1; ctx.lineWidth=bW;
+    [[0,0,1,1],[CW,0,-1,1],[0,CH,1,-1],[CW,CH,-1,-1]].forEach(([x,y,dx,dy])=>{
+      ctx.beginPath();ctx.moveTo(x+dx*bL,y);ctx.lineTo(x,y);ctx.lineTo(x,y+dy*bL);ctx.stroke();
+    });
+    ctx.shadowBlur=0;
+
+    canvas._animId=requestAnimationFrame(tick);
+  };
+  canvas._animId=requestAnimationFrame(tick);
+}
+
+function hexToRgb(hex){
+  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  return `${r},${g},${b}`;
+}
+
+// ── Build gallery grid ─────────────────────────────────────────
+function buildNftGallery(){
+  if(NFT.cardsDrawn) return;
+  const grid = document.getElementById('nftGrid');
+  if(!grid) return;
+  grid.innerHTML = '';
+  const count = 6; // show 6 preview cards
+  const traits = NFT_TRAITS;
+
+  for(let i=1;i<=count;i++){
+    const rng = seededRng(i*7919+13);
+    const faction = traits.factions[Math.floor(rng()*traits.factions.length)];
+    const type    = traits.types[Math.floor(rng()*traits.types.length)];
+    const rarity  = traits.rarity[Math.floor(rng()*traits.rarity.length)];
+
+    const card = document.createElement('div');
+    card.className = 'nft-card';
+    card.innerHTML = `
+      <div class="nft-card-bg">
+        <canvas class="nft-card-canvas" id="nftCanvas${i}" style="width:100%;height:100%"></canvas>
+      </div>
+      <div class="nft-card-overlay"></div>
+      <div class="nft-card-mint-badge">${rarity}</div>
+      <div class="nft-card-trait">${type}</div>
+      <div class="nft-card-num">#${String(i).padStart(3,'0')}</div>
+    `;
+    grid.appendChild(card);
+
+    // Draw after layout
+    setTimeout(()=>{
+      const canvas = document.getElementById('nftCanvas'+i);
+      if(canvas) drawNftCard(canvas, i);
+    }, i*60);
+  }
+  NFT.cardsDrawn = true;
+}
+
+// ── Countdown timer ────────────────────────────────────────────
+function updateCountdown(){
+  const now  = Date.now();
+  const diff = NFT.MINT_DATE.getTime() - now;
+  if(diff<=0){
+    ['cd-d','cd-h','cd-m','cd-s'].forEach(id=>{
+      const el=document.getElementById(id);
+      if(el) el.textContent='00';
+    });
+    refreshMintBtn();
+    return;
+  }
+  const d = Math.floor(diff/86400000);
+  const h = Math.floor((diff%86400000)/3600000);
+  const m = Math.floor((diff%3600000)/60000);
+  const s = Math.floor((diff%60000)/1000);
+  const fmt = n=>String(n).padStart(2,'0');
+  const set = (id,v)=>{const el=document.getElementById(id);if(el)el.textContent=fmt(v);};
+  set('cd-d',d);set('cd-h',h);set('cd-m',m);set('cd-s',s);
+}
+
+// ── Mint progress ──────────────────────────────────────────────
+function refreshMintProgress(){
+  const pct = (NFT.minted/NFT.MAX_SUPPLY)*100;
+  const fill = document.getElementById('mintProgFill');
+  const cnt  = document.getElementById('mintedCount');
+  const pctEl= document.getElementById('mintedPct');
+  if(fill) fill.style.width = pct+'%';
+  if(cnt)  cnt.textContent  = NFT.minted;
+  if(pctEl)pctEl.textContent= pct.toFixed(0)+'%';
+}
+
+// ── Qty controls ───────────────────────────────────────────────
+function changeQty(delta){
+  const max = Math.min(NFT.MAX_WALLET - NFT.walletMinted, NFT.MAX_SUPPLY - NFT.minted);
+  NFT.qty = Math.max(1, Math.min(NFT.qty + delta, max));
+  document.getElementById('qtyDisplay').textContent = NFT.qty;
+  document.getElementById('mintTotalCost').textContent = (NFT.qty * NFT.PRICE_CRO)+' CRO';
+  document.getElementById('qtyMinus').disabled = NFT.qty <= 1;
+  document.getElementById('qtyPlus').disabled  = NFT.qty >= max;
+}
+
+// ── Mint button state ──────────────────────────────────────────
+function refreshMintBtn(){
+  const btn = document.getElementById('mintBtn');
+  const txt = document.getElementById('mintBtnTxt');
+  if(!btn||!txt) return;
+  const mintOpen = Date.now() >= NFT.MINT_DATE.getTime();
+  const soldOut  = NFT.minted >= NFT.MAX_SUPPLY;
+  const maxed    = W.connected && NFT.walletMinted >= NFT.MAX_WALLET;
+
+  if(!W.connected){
+    txt.textContent='Connect Wallet to Mint';btn.disabled=false;return;
+  }
+  if(soldOut){
+    txt.textContent='SOLD OUT';btn.disabled=true;return;
+  }
+  if(!mintOpen){
+    txt.textContent='Mint Not Open Yet';btn.disabled=true;return;
+  }
+  if(maxed){
+    txt.textContent='Max Minted Per Wallet';btn.disabled=true;return;
+  }
+  txt.textContent='Mint Now';btn.disabled=false;
+}
+
+// ── Wallet display on NFT page ─────────────────────────────────
+function refreshNftWalletRow(){
+  const row  = document.getElementById('mintWalletRow');
+  const addr = document.getElementById('mintWalletAddr');
+  const cnt  = document.getElementById('mintWalletCount');
+  const wm   = document.getElementById('mintWalletMinted');
+  if(!row) return;
+  if(W.connected){
+    row.classList.remove('hidden');
+    if(addr) addr.textContent = W.addr.slice(0,8)+'…'+W.addr.slice(-6);
+    if(cnt)  cnt.textContent  = NFT.walletMinted;
+    if(wm)   wm.textContent   = NFT.walletMinted+' / '+NFT.MAX_WALLET+' minted';
+  } else {
+    row.classList.add('hidden');
+    if(wm) wm.textContent = '—';
+  }
+}
+
+// ── Handle mint click ──────────────────────────────────────────
+async function handleMint(){
+  if(!W.connected){ toggleWallet(); return; }
+  const mintOpen = Date.now() >= NFT.MINT_DATE.getTime();
+  if(!mintOpen){ toast('⏳','Not Open Yet','Mint date has not arrived yet','','warn'); return; }
+
+  const qty      = NFT.qty;
+  const cost     = qty * NFT.PRICE_CRO;
+  const costWei  = toW(cost.toString(), 18);
+  const btn      = document.getElementById('mintBtn');
+  const txt      = document.getElementById('mintBtnTxt');
+
+  // If contract is deployed, call mint() on it; otherwise send CRO to receiver wallet
+  const target = NFT.CONTRACT || NFT.RECEIVER;
+  // If contract exists, encode mint(qty) call: selector 0x1249c58b for mint() or build for mintTo
+  // For now: direct CRO payment to receiver wallet (contract not deployed yet)
+  const data = NFT.CONTRACT ? ('0xa0712d68' + (BigInt(qty)).toString(16).padStart(64,'0')) : '0x';
+
+  try{
+    txt.innerHTML = '<span class="sp2"></span>Confirm in Wallet…';
+    btn.disabled = true;
+    toast('🎨','Minting','Confirm the transaction in your wallet…','','pending');
+
+    const txHash = await window.ethereum.request({
+      method:'eth_sendTransaction',
+      params:[{from:W.addr, to:target, value:'0x'+costWei.toString(16), data}]
+    });
+    toast('⏳','Processing','Waiting for confirmation…','https://cronoscan.com/tx/'+txHash,'pending');
+    const rec = await pollRec(txHash);
+
+    if(rec?.status==='0x1'){
+      NFT.minted        = Math.min(NFT.minted + qty, NFT.MAX_SUPPLY);
+      NFT.walletMinted += qty;
+      refreshMintProgress();
+      refreshNftWalletRow();
+      refreshMintBtn();
+      changeQty(0); // refresh qty controls
+      toast('🎉','Minted!',`You minted ${qty} Neon Syndicate NFT${qty>1?'s':''}!`,'https://cronoscan.com/tx/'+txHash,'success');
+    } else {
+      toast('❌','Failed','Transaction reverted','https://cronoscan.com/tx/'+txHash,'error');
+    }
+  }catch(e){
+    toast('❌','Cancelled',e.message?.slice(0,80)||'Rejected','','error');
+  }finally{
+    refreshMintBtn();
+  }
+}
+
+// ── Init NFT page ──────────────────────────────────────────────
+function initNftPage(){
+  buildNftGallery();
+  refreshMintProgress();
+  refreshNftWalletRow();
+  refreshMintBtn();
+  changeQty(0);
+  // Start/restart countdown
+  if(NFT.cdInterval) clearInterval(NFT.cdInterval);
+  updateCountdown();
+  NFT.cdInterval = setInterval(updateCountdown, 1000);
+}
+
+// Also refresh NFT page state when wallet connects/disconnects
+const _origToggleWallet = toggleWallet;
+// Patch wallet connect to also refresh NFT if on that page
+const _origRefreshCB = refreshCB;
+function refreshCB(){
+  _origRefreshCB();
+  const nftPage = document.getElementById('page-nft');
+  if(nftPage && nftPage.classList.contains('active')){
+    refreshNftWalletRow();
+    refreshMintBtn();
+  }
+}
+
+
+// ══════════════════════════════════════════
+// BACKGROUND CYBERPUNK CITYSCAPE
+// ══════════════════════════════════════════
+(function initCityscape(){
+  const canvas = document.getElementById('bgCity');
+  if(!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  let W, H, buildings=[], particles=[], scanY=0;
+
+  function resize(){
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    buildCity();
+  }
+
+  function buildCity(){
+    buildings = [];
+    const cols = Math.floor(W / 18) + 2;
+    for(let i=0;i<cols;i++){
+      const w  = 14 + Math.random()*30;
+      const h  = H*0.2 + Math.random()*H*0.55;
+      const x  = i*(W/cols) - 4;
+      const hue = Math.random()<0.5 ? 'cyan' : Math.random()<0.5 ? 'pink' : 'violet';
+      const wins = [];
+      const rows = Math.floor(h/14);
+      const wcols = Math.floor(w/10);
+      for(let r=0;r<rows;r++)
+        for(let c=0;c<wcols;c++)
+          if(Math.random()<0.35) wins.push({r,c,on:Math.random()<0.6});
+      buildings.push({x, w, h, hue, wins, flickerT:Math.random()*200});
+    }
+    particles = Array.from({length:60},()=>({
+      x:Math.random()*W, y:Math.random()*H,
+      vy:0.3+Math.random()*0.8,
+      size:Math.random()*1.5+0.3,
+      alpha:Math.random()*0.6+0.2,
+      hue:Math.random()<0.5?'#00ffc8':'#ff0080'
+    }));
+  }
+
+  function colorOf(hue,a){
+    if(hue==='cyan')   return `rgba(0,255,200,${a})`;
+    if(hue==='pink')   return `rgba(255,0,128,${a})`;
+    return `rgba(119,0,255,${a})`;
+  }
+
+  let frame=0;
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+
+    // Sky gradient
+    const sky = ctx.createLinearGradient(0,0,0,H);
+    sky.addColorStop(0,'#010308');
+    sky.addColorStop(0.6,'#050215');
+    sky.addColorStop(1,'#0a0520');
+    ctx.fillStyle=sky;
+    ctx.fillRect(0,0,W,H);
+
+    // Moon / orb
+    const grd = ctx.createRadialGradient(W*0.75,H*0.18,2,W*0.75,H*0.18,70);
+    grd.addColorStop(0,'rgba(119,0,255,0.35)');
+    grd.addColorStop(0.5,'rgba(119,0,255,0.08)');
+    grd.addColorStop(1,'transparent');
+    ctx.fillStyle=grd;
+    ctx.beginPath();
+    ctx.arc(W*0.75,H*0.18,70,0,Math.PI*2);
+    ctx.fill();
+
+    // Horizon glow
+    const hgrd = ctx.createLinearGradient(0,H*0.45,0,H*0.65);
+    hgrd.addColorStop(0,'rgba(255,0,128,0.12)');
+    hgrd.addColorStop(1,'transparent');
+    ctx.fillStyle=hgrd;
+    ctx.fillRect(0,H*0.45,W,H*0.2);
+
+    // Buildings
+    buildings.forEach((b,bi)=>{
+      const top = H - b.h;
+
+      // Body
+      const bg = ctx.createLinearGradient(b.x,top,b.x+b.w,H);
+      bg.addColorStop(0,colorOf(b.hue,0.15));
+      bg.addColorStop(1,'rgba(1,3,8,0.9)');
+      ctx.fillStyle=bg;
+      ctx.fillRect(b.x,top,b.w,b.h);
+
+      // Edge glow
+      ctx.strokeStyle=colorOf(b.hue,0.4);
+      ctx.lineWidth=0.8;
+      ctx.strokeRect(b.x,top,b.w,b.h);
+
+      // Antenna
+      if(b.w>20){
+        ctx.strokeStyle=colorOf(b.hue,0.5);
+        ctx.lineWidth=1;
+        ctx.beginPath();
+        ctx.moveTo(b.x+b.w/2,top);
+        ctx.lineTo(b.x+b.w/2,top-12);
+        ctx.stroke();
+        // Blinking antenna light
+        if(frame%60 < 30){
+          ctx.fillStyle=colorOf(b.hue,0.9);
+          ctx.beginPath();
+          ctx.arc(b.x+b.w/2,top-13,1.5,0,Math.PI*2);
+          ctx.fill();
+        }
+      }
+
+      // Windows
+      const ww=6, wh=5, wp=10, hp=14;
+      b.wins.forEach(win=>{
+        if(frame - b.flickerT > 90 && Math.random()<0.003) win.on=!win.on;
+        if(!win.on) return;
+        const wx = b.x + 3 + win.c*wp;
+        const wy = top + 6 + win.r*hp;
+        if(wx+ww > b.x+b.w) return;
+        ctx.fillStyle=colorOf(b.hue, 0.55+Math.random()*0.15);
+        ctx.fillRect(wx,wy,ww,wh);
+        // Window glow
+        ctx.shadowColor=colorOf(b.hue,0.8);
+        ctx.shadowBlur=4;
+        ctx.fillRect(wx,wy,ww,wh);
+        ctx.shadowBlur=0;
+      });
+    });
+
+    // Ground reflection / road
+    const road = ctx.createLinearGradient(0,H*0.85,0,H);
+    road.addColorStop(0,'rgba(0,255,200,0.06)');
+    road.addColorStop(0.4,'rgba(255,0,128,0.04)');
+    road.addColorStop(1,'rgba(1,3,8,0.95)');
+    ctx.fillStyle=road;
+    ctx.fillRect(0,H*0.85,W,H*0.15);
+
+    // Scan line
+    scanY = (scanY + 1.2) % H;
+    const scan = ctx.createLinearGradient(0,scanY-8,0,scanY+8);
+    scan.addColorStop(0,'transparent');
+    scan.addColorStop(0.5,'rgba(0,255,200,0.04)');
+    scan.addColorStop(1,'transparent');
+    ctx.fillStyle=scan;
+    ctx.fillRect(0,scanY-8,W,16);
+
+    // Floating particles (dust/rain)
+    particles.forEach(p=>{
+      p.y += p.vy;
+      if(p.y > H){ p.y=-5; p.x=Math.random()*W; }
+      ctx.globalAlpha = p.alpha;
+      ctx.fillStyle = p.hue;
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+      ctx.fill();
+    });
+    ctx.globalAlpha=1;
+
+    frame++;
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  draw();
+})();
+
+
+// ═══════════════════════════════════════════════
+//  CYBERPUNK CITYSCAPE BACKGROUND
+// ═══════════════════════════════════════════════
+(function(){
+  const canvas = document.getElementById('bgCanvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, buildings = [], rainDrops = [], scanY = 0, frame = 0;
+
+  function resize(){
+    W = canvas.width  = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    generateCity();
+  }
+
+  function generateCity(){
+    buildings = [];
+    const cols = Math.ceil(W / 18);
+    for(let i = 0; i < cols; i++){
+      const w = 14 + Math.random() * 28;
+      const h = 60 + Math.random() * (H * 0.55);
+      const x = i * (W / cols) + Math.random() * 6 - 3;
+      const layer = Math.random() < 0.35 ? 'far' : Math.random() < 0.5 ? 'mid' : 'near';
+      const hue = Math.random() < 0.5 ? 'cyan' : Math.random() < 0.5 ? 'pink' : 'violet';
+      const windows = [];
+      const wCols = Math.floor(w / 7);
+      const wRows = Math.floor(h / 10);
+      for(let r = 0; r < wRows; r++){
+        for(let c = 0; c < wCols; c++){
+          if(Math.random() < 0.45) windows.push({r, c, on: Math.random() < 0.7});
+        }
+      }
+      buildings.push({x, w, h, layer, hue, windows, wCols, wRows,
+        flickerRate: 0.002 + Math.random() * 0.004});
+    }
+    // Rain drops
+    rainDrops = [];
+    for(let i = 0; i < 80; i++){
+      rainDrops.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        len: 8 + Math.random() * 20,
+        speed: 2 + Math.random() * 4,
+        alpha: 0.1 + Math.random() * 0.25,
+        hue: Math.random() < 0.7 ? 'cyan' : 'pink'
+      });
+    }
+  }
+
+  function drawBuilding(b){
+    const y = H - b.h;
+    // Layer-based colors
+    let fillColor, glowColor, glowAlpha;
+    if(b.layer === 'far'){
+      fillColor = 'rgba(2,6,18,0.9)';
+      glowAlpha = 0.3;
+    } else if(b.layer === 'mid'){
+      fillColor = 'rgba(3,8,22,0.95)';
+      glowAlpha = 0.5;
+    } else {
+      fillColor = 'rgba(4,10,26,0.98)';
+      glowAlpha = 0.7;
+    }
+    if(b.hue === 'cyan')       glowColor = `rgba(0,255,200,${glowAlpha})`;
+    else if(b.hue === 'pink')  glowColor = `rgba(255,0,128,${glowAlpha})`;
+    else                       glowColor = `rgba(119,0,255,${glowAlpha})`;
+
+    // Building body
+    ctx.fillStyle = fillColor;
+    ctx.fillRect(b.x, y, b.w, b.h);
+
+    // Neon edge glow
+    ctx.save();
+    ctx.shadowBlur = 8;
+    ctx.shadowColor = glowColor;
+    ctx.strokeStyle = glowColor;
+    ctx.lineWidth = 0.5;
+    ctx.strokeRect(b.x, y, b.w, b.h);
+    ctx.restore();
+
+    // Rooftop antenna
+    if(b.h > H * 0.25 && Math.random() < 0.01){
+      ctx.save();
+      ctx.strokeStyle = glowColor;
+      ctx.lineWidth = 1;
+      ctx.shadowBlur = 6;
+      ctx.shadowColor = glowColor;
+      ctx.beginPath();
+      ctx.moveTo(b.x + b.w/2, y);
+      ctx.lineTo(b.x + b.w/2, y - 12 - Math.random()*10);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // Windows
+    const wW = (b.w - 4) / b.wCols;
+    const wH = 6;
+    for(const win of b.windows){
+      if(!win.on) continue;
+      const wx = b.x + 2 + win.c * wW + 1;
+      const wy = y + 4 + win.r * 10;
+      let wColor;
+      if(b.hue === 'cyan')      wColor = `rgba(0,255,200,0.6)`;
+      else if(b.hue === 'pink') wColor = `rgba(255,0,128,0.55)`;
+      else                      wColor = `rgba(180,100,255,0.55)`;
+      ctx.save();
+      ctx.fillStyle = wColor;
+      ctx.shadowBlur = 4;
+      ctx.shadowColor = wColor;
+      ctx.fillRect(wx, wy, wW - 2, wH - 1);
+      ctx.restore();
+    }
+  }
+
+  function drawRain(){
+    for(const d of rainDrops){
+      const color = d.hue === 'cyan'
+        ? `rgba(0,255,200,${d.alpha})`
+        : `rgba(255,0,128,${d.alpha})`;
+      ctx.save();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 0.8;
+      ctx.shadowBlur = 3;
+      ctx.shadowColor = color;
+      ctx.beginPath();
+      ctx.moveTo(d.x, d.y);
+      ctx.lineTo(d.x - 1, d.y + d.len);
+      ctx.stroke();
+      ctx.restore();
+      d.y += d.speed;
+      if(d.y > H + d.len){ d.y = -d.len; d.x = Math.random() * W; }
+    }
+  }
+
+  function drawScanLine(){
+    const grad = ctx.createLinearGradient(0, scanY - 40, 0, scanY + 40);
+    grad.addColorStop(0, 'rgba(0,255,200,0)');
+    grad.addColorStop(0.5, 'rgba(0,255,200,0.04)');
+    grad.addColorStop(1, 'rgba(0,255,200,0)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, scanY - 40, W, 80);
+    scanY += 1.2;
+    if(scanY > H + 40) scanY = -40;
+  }
+
+  function drawGrid(){
+    ctx.save();
+    ctx.strokeStyle = 'rgba(0,255,200,0.03)';
+    ctx.lineWidth = 0.5;
+    const size = 40;
+    for(let x = 0; x < W; x += size){
+      ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke();
+    }
+    for(let y = 0; y < H; y += size){
+      ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  function drawHorizonGlow(){
+    const hy = H * 0.55;
+    const g1 = ctx.createLinearGradient(0, hy - 60, 0, hy + 80);
+    g1.addColorStop(0, 'rgba(255,0,128,0)');
+    g1.addColorStop(0.5, 'rgba(255,0,128,0.06)');
+    g1.addColorStop(1, 'rgba(255,0,128,0)');
+    ctx.fillStyle = g1;
+    ctx.fillRect(0, hy - 60, W, 140);
+
+    // Moon / orb
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(W * 0.78, H * 0.18, 28, 0, Math.PI * 2);
+    const moonGrad = ctx.createRadialGradient(W*0.78, H*0.18, 0, W*0.78, H*0.18, 28);
+    moonGrad.addColorStop(0, 'rgba(119,0,255,0.25)');
+    moonGrad.addColorStop(0.6, 'rgba(119,0,255,0.1)');
+    moonGrad.addColorStop(1, 'rgba(119,0,255,0)');
+    ctx.fillStyle = moonGrad;
+    ctx.shadowBlur = 30;
+    ctx.shadowColor = 'rgba(119,0,255,0.4)';
+    ctx.fill();
+    ctx.restore();
+  }
+
+  function flicker(){
+    frame++;
+    if(frame % 3 !== 0) return;
+    for(const b of buildings){
+      if(Math.random() < b.flickerRate){
+        const win = b.windows[Math.floor(Math.random() * b.windows.length)];
+        if(win) win.on = !win.on;
+      }
+    }
+  }
+
+  function draw(){
+    ctx.clearRect(0, 0, W, H);
+    drawGrid();
+    drawHorizonGlow();
+    // Draw layers back to front
+    for(const b of buildings.filter(b=>b.layer==='far'))  drawBuilding(b);
+    for(const b of buildings.filter(b=>b.layer==='mid'))  drawBuilding(b);
+    for(const b of buildings.filter(b=>b.layer==='near')) drawBuilding(b);
+    drawRain();
+    drawScanLine();
+    flicker();
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', resize);
+  resize();
+  draw();
+})();
+
 </script>
 </body>
 </html>
