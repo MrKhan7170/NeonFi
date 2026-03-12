@@ -1633,7 +1633,17 @@ async function ensureCronos(){
   try{await window.ethereum.request({method:'wallet_switchEthereumChain',params:[{chainId:'0x19'}]});}
   catch(e){if(e.code===4902)await window.ethereum.request({method:'wallet_addEthereumChain',params:[{chainId:'0x19',chainName:'Cronos Mainnet',nativeCurrency:{name:'CRO',symbol:'CRO',decimals:18},rpcUrls:['https://evm.cronos.org'],blockExplorerUrls:['https://cronoscan.com']}]});else throw e;}
 }
-function refreshCB(){const b=document.getElementById('cb');if(W.connected){b.textContent=W.addr.slice(0,6)+'…'+W.addr.slice(-4);b.classList.add('on');}else{b.textContent='Connect Wallet';b.classList.remove('on');}}
+function refreshCB(){
+  const b=document.getElementById('cb');
+  if(W.connected){b.textContent=W.addr.slice(0,6)+'…'+W.addr.slice(-4);b.classList.add('on');}
+  else{b.textContent='Connect Wallet';b.classList.remove('on');}
+  // Also refresh NFT page if active
+  const nftPage=document.getElementById('page-nft');
+  if(nftPage&&nftPage.classList.contains('active')){
+    if(typeof refreshNftWalletRow==='function') refreshNftWalletRow();
+    if(typeof refreshMintBtn==='function') refreshMintBtn();
+  }
+}
 async function loadBals(){
   if(!W.connected)return;
   try{const h=await window.ethereum.request({method:'eth_getBalance',params:[W.addr,'latest']});TOKENS[0].bal=BigInt(h);}catch(e){}
@@ -2686,18 +2696,8 @@ function initNftPage(){
   NFT.cdInterval = setInterval(updateCountdown, 1000);
 }
 
-// Also refresh NFT page state when wallet connects/disconnects
-const _origToggleWallet = toggleWallet;
-// Patch wallet connect to also refresh NFT if on that page
-const _origRefreshCB = refreshCB;
-function refreshCB(){
-  _origRefreshCB();
-  const nftPage = document.getElementById('page-nft');
-  if(nftPage && nftPage.classList.contains('active')){
-    refreshNftWalletRow();
-    refreshMintBtn();
-  }
-}
+// Refresh NFT page state when wallet connects — injected directly into original refreshCB
+// (no function override to avoid infinite recursion)
 
 
 // ══════════════════════════════════════════
